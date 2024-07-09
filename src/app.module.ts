@@ -18,4 +18,3 @@ import dbConfig from './libs/persistence/dbConfig';
   providers: [AppService],
 })
 export class AppModule {}
-

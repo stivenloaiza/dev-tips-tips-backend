@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types as MongooseTypes } from 'mongoose';
-import { Lang } from 'src/setup/lang/entity/lang.entity';
-import { Level } from 'src/setup/range/entity/levels.entity';
-import { Subtechnology } from 'src/setup/subtechnology/entity/subTecnology.entity';
-import { Tecnology } from 'src/setup/technology/entity/tecnology.entity';
+import { Lang } from 'src/setUp/lang/entities/lang.entity';
+import { Level } from 'src/setUp/level/entities/level.entity';
+import { Subtechnology } from 'src/setUp/subtechnology/entities/subtechnology.entity';
+import { Technology } from 'src/setUp/technology/entities/technology.entity';
 
 export type TipDocument = Tip & Document;
 
@@ -31,7 +31,7 @@ export class Tip {
   level: Level[];
 
   @Prop({ type: [{ type: MongooseTypes.ObjectId, ref: 'Tecnology' }] })
-  technology: Tecnology[];
+  technology: Technology[];
 
   @Prop({ type: [{ type: MongooseTypes.ObjectId, ref: 'Subtechnology' }] })
   subtechnology: Subtechnology[];

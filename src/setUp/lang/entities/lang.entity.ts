@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+export type LangDocument = Lang & Document;
+
 @Schema({ timestamps: true })
-export class Lang extends Document {
+export class Lang {
   @Prop({ required: true, unique: true })
   id: number;
 
