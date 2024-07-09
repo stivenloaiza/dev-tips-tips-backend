@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PersistenceModule } from './libs/persistence/persistence.module';
 import { ConfigModule } from '@nestjs/config';
-import { TipsModule } from './modules/tips/tips.module';
 import dbConfig from './libs/persistence/dbConfig';
 
 @Module({
@@ -14,7 +13,6 @@ import dbConfig from './libs/persistence/dbConfig';
       isGlobal: true,
     }),
     PersistenceModule,
-    TipsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
