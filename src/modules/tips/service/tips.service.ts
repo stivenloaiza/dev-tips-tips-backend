@@ -33,21 +33,47 @@ export class TipsService {
   ) {}
 
   async create(createTipDto: CreateTipDto): Promise<Tip> {
-    try {
-      const createdTip = new this.tipModel(createTipDto);
-      return createdTip.save();
-    } catch (error) {
-      throw new HttpException(
-        `Failed to create Tip: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    await this.validateReferences(createTipDto);
+
+    const technologyDetails = await this.getEntitiesDetails(
+      this.technologyModel,
+      createTipDto.technology,
+    );
+    const subtechnologyDetails = await this.getEntitiesDetails(
+      this.subtechnologyModel,
+      createTipDto.subtechnology,
+    );
+    const langDetails = await this.getEntitiesDetails(
+      this.langModel,
+      createTipDto.lang,
+    );
+    const levelDetails = await this.getEntitiesDetails(
+      this.levelModel,
+      createTipDto.level,
+    );
+
+    const createdTip = new this.tipModel({
+      ...createTipDto,
+      technology: technologyDetails,
+      subtechnology: subtechnologyDetails,
+      lang: langDetails,
+      level: levelDetails,
+    });
+
+    return createdTip.save();
   }
 
   async findAll(filters: any): Promise<Tip[]> {
     try {
-      const { page, limit, title, technology, subtechnology, lang, level } =
-        filters;
+      const {
+        page = 1,
+        limit = 10,
+        title,
+        technology,
+        subtechnology,
+        lang,
+        level,
+      } = filters;
 
       const query = this.tipModel.find();
 
@@ -55,16 +81,16 @@ export class TipsService {
         query.where('title', new RegExp(title, 'i'));
       }
       if (technology) {
-        query.where('technology').in([technology]);
+        query.where('technology.name').in([technology]);
       }
       if (subtechnology) {
-        query.where('subtechnology').in([subtechnology]);
+        query.where('subtechnology.name').in([subtechnology]);
       }
       if (lang) {
-        query.where('lang').in([lang]);
+        query.where('lang.name').in([lang]);
       }
       if (level) {
-        query.where('level').in([level]);
+        query.where('level.name').in([level]);
       }
 
       return query
@@ -78,13 +104,7 @@ export class TipsService {
 
   async findOne(id: string): Promise<Tip> {
     try {
-      const tip = await this.tipModel
-        .findById(id)
-        .populate('technology')
-        .populate('subtechnology')
-        .populate('lang')
-        .populate('level')
-        .exec();
+      const tip = await this.tipModel.findById(id).exec();
       if (!tip || tip.deletedAt) {
         throw new NotFoundException('Tip not found');
       }
@@ -98,16 +118,41 @@ export class TipsService {
     try {
       await this.validateReferences(updateTipDto);
 
+      const technologyDetails = await this.getEntitiesDetails(
+        this.technologyModel,
+        updateTipDto.technology,
+      );
+      const subtechnologyDetails = await this.getEntitiesDetails(
+        this.subtechnologyModel,
+        updateTipDto.subtechnology,
+      );
+      const langDetails = await this.getEntitiesDetails(
+        this.langModel,
+        updateTipDto.lang,
+      );
+      const levelDetails = await this.getEntitiesDetails(
+        this.levelModel,
+        updateTipDto.level,
+      );
+
       const tip = await this.tipModel
-        .findByIdAndUpdate(id, updateTipDto, { new: true })
-        .populate('technology')
-        .populate('subtechnology')
-        .populate('lang')
-        .populate('level')
+        .findByIdAndUpdate(
+          id,
+          {
+            ...updateTipDto,
+            technology: technologyDetails,
+            subtechnology: subtechnologyDetails,
+            lang: langDetails,
+            level: levelDetails,
+          },
+          { new: true },
+        )
         .exec();
+
       if (!tip || tip.deletedAt) {
         throw new NotFoundException('Tip not found');
       }
+
       return tip;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -129,41 +174,52 @@ export class TipsService {
 
   async validateReferences(tipDto: CreateTipDto | UpdateTipDto): Promise<void> {
     try {
-      if (tipDto.technology) {
-        const technologies = await this.technologyModel.find({
-          id: { $in: tipDto.technology },
-        });
-        if (technologies.length !== tipDto.technology.length) {
-          throw new NotFoundException('Some technologies not found');
-        }
-      }
-
-      if (tipDto.subtechnology) {
-        const subtechnologies = await this.subtechnologyModel.find({
-          id: { $in: tipDto.subtechnology },
-        });
-        if (subtechnologies.length !== tipDto.subtechnology.length) {
-          throw new NotFoundException('Some subtechnologies not found');
-        }
-      }
-
-      if (tipDto.lang) {
-        const langs = await this.langModel.find({ id: { $in: tipDto.lang } });
-        if (langs.length !== tipDto.lang.length) {
-          throw new NotFoundException('Some languages not found');
-        }
-      }
-
-      if (tipDto.level) {
-        const levels = await this.levelModel.find({
-          id: { $in: tipDto.level },
-        });
-        if (levels.length !== tipDto.level.length) {
-          throw new NotFoundException('Some levels not found');
-        }
-      }
+      await this.validateEntityReferences(
+        this.technologyModel,
+        tipDto.technology,
+        'Some technologies not found',
+      );
+      await this.validateEntityReferences(
+        this.subtechnologyModel,
+        tipDto.subtechnology,
+        'Some subtechnologies not found',
+      );
+      await this.validateEntityReferences(
+        this.langModel,
+        tipDto.lang,
+        'Some languages not found',
+      );
+      await this.validateEntityReferences(
+        this.levelModel,
+        tipDto.level,
+        'Some levels not found',
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  private async getEntitiesDetails(
+    model: Model<any>,
+    ids: string[],
+  ): Promise<any[]> {
+    const entities = await model.find({ _id: { $in: ids } }, '_id name').exec();
+    return entities.map((entity) => ({
+      _id: entity._id,
+      name: entity.name,
+    }));
+  }
+
+  private async validateEntityReferences(
+    model: Model<any>,
+    ids: string[],
+    errorMessage: string,
+  ): Promise<void> {
+    if (ids) {
+      const entities = await model.find({ _id: { $in: ids } }).exec();
+      if (entities.length !== ids.length) {
+        throw new NotFoundException(errorMessage);
+      }
     }
   }
 }
