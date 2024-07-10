@@ -1,4 +1,12 @@
-import { IsNumber, IsOptional, IsString, IsBoolean, IsDateString, ArrayNotEmpty, IsMongoId } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsBoolean,
+  IsDateString,
+  ArrayNotEmpty,
+  IsMongoId,
+} from 'class-validator';
 
 export class CreateTipDto {
   @IsNumber()
@@ -27,8 +35,8 @@ export class CreateTipDto {
   level: string[];
 
   @ArrayNotEmpty()
-  @IsMongoId({each: true})
-  @IsString({ each: true }) 
+  @IsMongoId({ each: true })
+  @IsString({ each: true })
   technology: string[];
 
   @ArrayNotEmpty()
@@ -37,8 +45,8 @@ export class CreateTipDto {
   subtechnology: string[];
 
   @ArrayNotEmpty()
-  @IsMongoId({ each: true }) 
-  @IsString({ each: true }) 
+  @IsMongoId({ each: true })
+  @IsString({ each: true })
   lang: string[];
 
   @IsOptional()
