@@ -27,7 +27,7 @@ export class Tip {
   @Prop({ type: [{ type: MongooseTypes.ObjectId, ref: 'Level' }] })
   level: Level[];
 
-  @Prop({ type: [{ type: MongooseTypes.ObjectId, ref: 'Tecnology' }] })
+  @Prop({ type: [{ type: MongooseTypes.ObjectId, ref: 'Technology' }] })
   technology: Technology[];
 
   @Prop({ type: [{ type: MongooseTypes.ObjectId, ref: 'Subtechnology' }] })
