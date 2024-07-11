@@ -5,7 +5,6 @@ export type LangDocument = Lang & Document;
 
 @Schema({ timestamps: true })
 export class Lang {
-
   @Prop({ required: true })
   name: string;
 

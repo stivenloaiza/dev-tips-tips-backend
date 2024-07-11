@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Level, LevelDocument } from '../entities/level.entity';
+import { CreateLevelDto } from '../dto/create-level.dto';
 
 @Injectable()
 export class LevelService {
@@ -9,7 +10,7 @@ export class LevelService {
     @InjectModel(Level.name) private levelModel: Model<LevelDocument>,
   ) {}
 
-  async create(createLevelDto: any): Promise<Level> {
+  async create(createLevelDto: CreateLevelDto): Promise<Level> {
     const createdLevel = new this.levelModel(createLevelDto);
     return createdLevel.save();
   }
