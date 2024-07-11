@@ -1,5 +1,4 @@
 import {
-  IsNumber,
   IsOptional,
   IsString,
   IsBoolean,
@@ -9,9 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreateTipDto {
-  @IsNumber()
-  id: number;
-
   @IsOptional()
   @IsString()
   img_url?: string;

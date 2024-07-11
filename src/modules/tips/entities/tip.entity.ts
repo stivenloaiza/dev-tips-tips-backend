@@ -9,9 +9,6 @@ export type TipDocument = Tip & Document;
 
 @Schema({ timestamps: true })
 export class Tip {
-  @Prop({ required: true, unique: true })
-  id: number;
-
   @Prop()
   img_url: string;
 
