@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { CreateTipDto } from '../dto/create-tip.dto';
 import { UpdateTipDto } from '../dto/update-tip.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
 
 @ApiTags('Tips')
@@ -36,17 +36,75 @@ export class TipsController {
   }
 
   @Get('all')
-  @ApiOperation({ summary: 'Get all tips with optional filters' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of tips.',
+  @ApiOperation({ summary: 'Obtener todos los tips con filtro y paginación' })
+  @ApiResponse({ status: 200, description: 'Lista de todos los tips.' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número de página',
+    example: 1,
   })
-  async findAll(@Query() query) {
-    try {
-      return await this.tipsService.findAll(query);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Número de resultados por página',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'title',
+    required: false,
+    type: String,
+    description: 'Filtrar por título',
+    example: 'Introduction',
+  })
+  @ApiQuery({
+    name: 'technology',
+    required: false,
+    type: String,
+    description: 'Filtrar por tecnología',
+    example: 'JavaScript',
+  })
+  @ApiQuery({
+    name: 'subtechnology',
+    required: false,
+    type: String,
+    description: 'Filtrar por subtecnología',
+    example: 'Arrow Functions',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    type: String,
+    description: 'Filtrar por idioma',
+    example: 'English',
+  })
+  @ApiQuery({
+    name: 'level',
+    required: false,
+    type: String,
+    description: 'Filtrar por nivel',
+    example: 'Beginner',
+  })
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('title') title?: string,
+    @Query('technology') technology?: string,
+    @Query('subtechnology') subtechnology?: string,
+    @Query('lang') lang?: string,
+    @Query('level') level?: string,
+  ) {
+    return this.tipsService.findAll({
+      page,
+      limit,
+      title,
+      technology,
+      subtechnology,
+      lang,
+      level,
+    });
   }
 
   @Get(':id')
