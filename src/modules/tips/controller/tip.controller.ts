@@ -36,58 +36,36 @@ export class TipsController {
   }
 
   @Get('all')
-  @ApiOperation({ summary: 'Obtener todos los tips con filtro y paginación' })
-  @ApiResponse({ status: 200, description: 'Lista de todos los tips.' })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Número de página',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    description: 'Número de resultados por página',
-    example: 10,
-  })
+  @ApiOperation({ summary: 'Obtain all tips with filters and pagination' })
+  @ApiResponse({ status: 200, description: 'List of all tips.' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({
     name: 'title',
     required: false,
     type: String,
-    description: 'Filtrar por título',
     example: 'Introduction',
   })
   @ApiQuery({
     name: 'technology',
     required: false,
     type: String,
-    description: 'Filtrar por tecnología',
     example: 'JavaScript',
   })
   @ApiQuery({
     name: 'subtechnology',
     required: false,
     type: String,
-    description: 'Filtrar por subtecnología',
     example: 'Arrow Functions',
   })
-  @ApiQuery({
-    name: 'lang',
-    required: false,
-    type: String,
-    description: 'Filtrar por idioma',
-    example: 'English',
-  })
+  @ApiQuery({ name: 'lang', required: false, type: String, example: 'English' })
   @ApiQuery({
     name: 'level',
     required: false,
     type: String,
-    description: 'Filtrar por nivel',
     example: 'Beginner',
   })
-  findAll(
+  async getAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('title') title?: string,
@@ -96,15 +74,19 @@ export class TipsController {
     @Query('lang') lang?: string,
     @Query('level') level?: string,
   ) {
-    return this.tipsService.findAll({
-      page,
-      limit,
-      title,
-      technology,
-      subtechnology,
-      lang,
-      level,
-    });
+    try {
+      return await this.tipsService.findAll({
+        page,
+        limit,
+        title,
+        technology,
+        subtechnology,
+        lang,
+        level,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get(':id')
