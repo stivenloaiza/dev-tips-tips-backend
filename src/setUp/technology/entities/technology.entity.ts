@@ -5,9 +5,6 @@ export type TechnologyDocument = Technology & Document;
 
 @Schema({ timestamps: true })
 export class Technology {
-  @Prop({ required: true, unique: true })
-  id: number;
-
   @Prop({ required: true })
   name: string;
 

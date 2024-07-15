@@ -1,16 +1,6 @@
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateLevelDto {
-  @IsNumber()
-  @IsNotEmpty()
-  id: number;
-
   @IsString()
   @IsNotEmpty()
   name: string;

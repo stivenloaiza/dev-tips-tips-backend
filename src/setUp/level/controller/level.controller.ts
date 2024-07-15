@@ -25,7 +25,7 @@ export class LevelController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('_id') id: number) {
     return this.levelService.delete(id);
   }
 }

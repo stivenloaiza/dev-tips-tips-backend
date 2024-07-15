@@ -8,10 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreateTechnologyDto {
-  @IsNumber()
-  @IsNotEmpty()
-  id: number;
-
   @IsString()
   @IsNotEmpty()
   name: string;

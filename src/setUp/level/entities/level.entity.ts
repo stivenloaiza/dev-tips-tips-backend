@@ -5,9 +5,6 @@ export type LevelDocument = Level & Document;
 
 @Schema({ timestamps: true })
 export class Level {
-  @Prop({ required: true, unique: true })
-  id: number;
-
   @Prop({ required: true })
   name: string;
 

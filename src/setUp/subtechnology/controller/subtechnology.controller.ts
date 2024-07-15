@@ -31,7 +31,7 @@ export class SubtechnologyController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number): Promise<Subtechnology> {
+  delete(@Param('_id') id: number): Promise<Subtechnology> {
     return this.subtechnologyService.delete(id);
   }
 }
