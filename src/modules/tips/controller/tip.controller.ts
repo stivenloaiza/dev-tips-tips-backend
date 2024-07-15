@@ -96,7 +96,7 @@ export class TipsController {
     description: 'The tip found.',
   })
   @ApiResponse({ status: 404, description: 'Tip not found.' })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('_id') id: string) {
     try {
       return await this.tipsService.findOne(id);
     } catch (error) {
@@ -111,7 +111,7 @@ export class TipsController {
     description: 'The tip has been successfully updated.',
   })
   @ApiResponse({ status: 404, description: 'Tip not found.' })
-  async update(@Param('id') id: string, @Body() updateTipDto: UpdateTipDto) {
+  async update(@Param('_id') id: string, @Body() updateTipDto: UpdateTipDto) {
     try {
       return await this.tipsService.update(id, updateTipDto);
     } catch (error) {
@@ -126,7 +126,7 @@ export class TipsController {
     description: 'The tip has been successfully deleted.',
   })
   @ApiResponse({ status: 404, description: 'Tip not found.' })
-  async remove(@Param('id') id: string) {
+  async remove(@Param('_id') id: string) {
     try {
       await this.tipsService.delete(id);
       return { message: 'Tip deleted successfully' };

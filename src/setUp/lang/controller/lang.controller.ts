@@ -29,7 +29,7 @@ export class LangController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number): Promise<Lang> {
+  delete(@Param('_id') id: number): Promise<Lang> {
     return this.langService.delete(id);
   }
 }

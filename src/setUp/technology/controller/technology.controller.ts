@@ -31,7 +31,7 @@ export class TechnologyController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number): Promise<Technology> {
+  delete(@Param('_id') id: number): Promise<Technology> {
     return this.technologyService.delete(id);
   }
 }

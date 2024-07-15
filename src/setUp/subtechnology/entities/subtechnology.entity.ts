@@ -5,9 +5,6 @@ export type SubtechnologyDocument = Subtechnology & Document;
 
 @Schema({ timestamps: true })
 export class Subtechnology {
-  @Prop({ required: true, unique: true })
-  id: number;
-
   @Prop({ required: true })
   name: string;
 

@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PersistenceModule } from './libs/persistence/persistence.module';
 import { ConfigModule } from '@nestjs/config';
 import dbConfig from './libs/persistence/dbConfig';
@@ -24,7 +22,7 @@ import { SubtechnologyModule } from './setUp/subtechnology/subTechnology.module'
     TechnologyModule,
     SubtechnologyModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
