@@ -35,6 +35,20 @@ export class TipsController {
     }
   }
 
+  @Post('random')
+  @ApiOperation({ summary: 'Get random tips based on filters' })
+  @ApiResponse({
+    status: 200,
+    description: 'Random list of tips based on filters.',
+  })
+  async RandomTips(@Body() filters: CreateTipDto) {
+    try {
+      return await this.tipsService.getRandomTips(filters);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get('all')
   @ApiOperation({ summary: 'Obtain all tips with filters and pagination' })
   @ApiResponse({ status: 200, description: 'List of all tips.' })

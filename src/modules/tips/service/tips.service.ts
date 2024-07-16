@@ -278,4 +278,93 @@ export class TipsService {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  async getRandomTips(filters: CreateTipDto | UpdateTipDto): Promise<any[]> {
+    try {
+      const { technology, subtechnology, lang, level, limit } = filters;
+      const query = this.tipModel.find();
+
+      if (technology && technology.length > 0) {
+        const technologyIds = await this.getEntityIdsByName(
+          this.technologyModel,
+          technology,
+        );
+        query.where('technology').in(technologyIds);
+      }
+      if (subtechnology && subtechnology.length > 0) {
+        const subtechnologyIds = await this.getEntityIdsByName(
+          this.subtechnologyModel,
+          subtechnology,
+        );
+        query.where('subtechnology').in(subtechnologyIds);
+      }
+      if (lang && lang.length > 0) {
+        const langIds = await this.getEntityIdsByName(this.langModel, lang);
+        query.where('lang').in(langIds);
+      }
+      if (level && level.length > 0) {
+        const levelIds = await this.getEntityIdsByName(this.levelModel, level);
+        query.where('level').in(levelIds);
+      }
+
+      const tips = await query.exec();
+      const randomTips = this.shuffleArray(tips).slice(0, limit);
+
+      // Convertir las entidades a los nombres correspondientes
+      const formattedData = await Promise.all(
+        randomTips.map(async (tip) => ({
+          ...tip.toObject(),
+          technology: await this.getNamesByIds(
+            this.technologyModel,
+            tip.technology,
+          ),
+          subtechnology: await this.getNamesByIds(
+            this.subtechnologyModel,
+            tip.subtechnology,
+          ),
+          lang: await this.getNamesByIds(this.langModel, tip.lang),
+          level: await this.getNamesByIds(this.levelModel, tip.level),
+        })),
+      );
+
+      return formattedData;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  private async getEntityIdsByName(
+    model: Model<any>,
+    names: string[],
+  ): Promise<string[]> {
+    try {
+      const entities = await model.find({ name: { $in: names } }, '_id').exec();
+      if (entities.length !== names.length) {
+        throw new NotFoundException('Some names not found');
+      }
+      return entities.map((entity) => entity._id.toString());
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  private async getNamesByIds(
+    model: Model<any>,
+    ids: string[],
+  ): Promise<string[]> {
+    try {
+      const entities = await model.find({ _id: { $in: ids } }, 'name').exec();
+      return entities.map((entity) => entity.name);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  private shuffleArray(array: any[]): any[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 }

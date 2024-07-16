@@ -9,18 +9,19 @@ import {
 } from '@nestjs/common';
 import { LevelService } from '../service/level.service';
 import { CreateLevelDto } from '../dto/create-level.dto';
+import { Level } from '../entities/level.entity';
 
 @Controller('levels')
 export class LevelController {
   constructor(private readonly levelService: LevelService) {}
 
   @Post('new')
-  async create(@Body() createLevelDto: CreateLevelDto) {
-    return this.levelService.create(createLevelDto);
+  async createlevel(@Body() createDto: CreateLevelDto): Promise<Level> {
+    return await this.levelService.create(createDto);
   }
 
   @Get('all')
-  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
+  async getAll(@Query('page') page: number, @Query('limit') limit: number) {
     return this.levelService.findAll(page, limit);
   }
 
