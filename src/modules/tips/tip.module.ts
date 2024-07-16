@@ -27,7 +27,7 @@ import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
       { name: Level.name, schema: LevelSchema },
       { name: 'User', schema: UserSchema },
       { name: 'Tip', schema: TipSchema },
-      { name: 'UserTip', schema: UserTipSchema }
+      { name: 'UserTip', schema: UserTipSchema },
     ]),
   ],
   controllers: [TipsController],

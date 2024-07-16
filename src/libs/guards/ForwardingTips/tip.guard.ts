@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserTip } from './schema/user-tip.schema';
@@ -17,7 +22,10 @@ export class TipGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { userId, tipId } = request.body;
 
-    const userTip = await this.userTipModel.findOne({ user: userId, tip: tipId });
+    const userTip = await this.userTipModel.findOne({
+      user: userId,
+      tip: tipId,
+    });
 
     if (userTip) {
       throw new ConflictException('El tip ya ha sido enviado a este usuario.');

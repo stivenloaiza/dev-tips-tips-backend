@@ -140,6 +140,6 @@ export class TipsController {
   @Post('send')
   @UseGuards(TipGuard)
   async sendTip(@Body('userId') userId: string, @Body('tipId') tipId: string) {
-    return { message: 'Tip enviado con éxito.' };
+    return { message: `${userId} - ${tipId} - Tip enviado con éxito` };
   }
 }
