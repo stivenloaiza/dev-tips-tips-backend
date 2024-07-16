@@ -25,7 +25,7 @@ export class LangService {
     return this.langModel.find({ id: { $in: ids } }).exec();
   }
 
-  async delete(id: number): Promise<Lang> {
+  async delete(id: string): Promise<Lang> {
     const lang = await this.langModel.findOneAndDelete({ id }).exec();
     if (!lang) {
       throw new NotFoundException(`Lang with id ${id} not found`);
