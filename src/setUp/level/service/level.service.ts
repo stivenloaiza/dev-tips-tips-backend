@@ -10,9 +10,9 @@ export class LevelService {
     @InjectModel(Level.name) private levelModel: Model<LevelDocument>,
   ) {}
 
-  async create(createLevelDto: CreateLevelDto): Promise<Level> {
-    const createdLevel = new this.levelModel(createLevelDto);
-    return createdLevel.save();
+  async create(create: CreateLevelDto): Promise<Level> {
+    const createdLang = new this.levelModel(create);
+    return createdLang.save();
   }
 
   async findAll(page: number, limit: number): Promise<Level[]> {

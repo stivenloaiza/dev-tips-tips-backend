@@ -5,12 +5,13 @@ import {
   IsDateString,
   ArrayNotEmpty,
   IsMongoId,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateTipDto {
   @IsOptional()
   @IsString()
-  img_url?: string;
+  multimedia_url?: string;
 
   @IsString()
   title: string;
@@ -68,4 +69,8 @@ export class CreateTipDto {
   @IsOptional()
   @IsString()
   deleteBy?: string;
+
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
 }
