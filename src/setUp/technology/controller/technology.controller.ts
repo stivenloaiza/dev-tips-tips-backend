@@ -96,7 +96,7 @@ export class TechnologyController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  delete(@Param('_id') id: string): Promise<Technology> {
+  remove(@Param('_id') id: string): Promise<Technology> {
     return this.technologyService.delete(id);
   }
 }

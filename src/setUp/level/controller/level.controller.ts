@@ -73,14 +73,11 @@ export class LevelController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
-  async createlevel(@Body() createDto: CreateLevelDto): Promise<Level> {
-    return await this.levelService.create(createDto);
-  }
-
-  @Get('all')
-  async getAll(@Query('page') page: number, @Query('limit') limit: number) {
-    return this.levelService.findAll(page, limit);
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<Level[]> {
+    return await this.levelService.findAll(page, limit);
   }
 
   @Delete(':id')

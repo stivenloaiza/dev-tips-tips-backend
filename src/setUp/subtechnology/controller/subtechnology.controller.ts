@@ -75,9 +75,7 @@ export class SubtechnologyController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  findAll(
-
-  async getAll(
+  async findAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<Subtechnology[]> {
@@ -98,9 +96,7 @@ export class SubtechnologyController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  delete(@Param('_id') id: string): Promise<Subtechnology> {
-    return this.subtechnologyService.delete(id);
-  async remove(@Param('_id') id: number): Promise<Subtechnology> {
+  async remove(@Param('_id') id: string): Promise<Subtechnology> {
     return await this.subtechnologyService.delete(id);
   }
 }
