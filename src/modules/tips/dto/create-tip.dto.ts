@@ -4,9 +4,9 @@ import {
   IsString,
   IsBoolean,
   IsDateString,
-  ArrayNotEmpty,
   IsMongoId,
   IsNumber,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class CreateTipDto {
@@ -49,43 +49,43 @@ export class CreateTipDto {
 
   @ApiProperty({
     description: 'Array of IDs of levels associated with the tip',
-    example: ['609c6c5b0e468c3c24cfe8a5'],
-    type: [String],
+    example: '609c6c5b0e468c3c24cfe8a5',
+    type: String,
   })
-  @ArrayNotEmpty()
+  @IsNotEmpty()
   @IsMongoId()
   @IsString({ each: true })
-  level: string[];
+  level: string;
 
   @ApiProperty({
     description: 'Array of IDs of technologies associated with the tip',
-    example: ['609c6c5b0e468c3c24cfe8a5'],
-    type: [String],
+    example: '609c6c5b0e468c3c24cfe8a5',
+    type: String,
   })
-  @ArrayNotEmpty()
-  @IsMongoId({ each: true })
+  @IsNotEmpty()
+  @IsMongoId()
   @IsString({ each: true })
-  technology: string[];
+  technology: string;
 
   @ApiProperty({
     description: 'Array of IDs of subtechnologies associated with the tip',
-    example: ['609c6c5b0e468c3c24cfe8a5'],
-    type: [String],
+    example: '609c6c5b0e468c3c24cfe8a5',
+    type: String,
   })
-  @ArrayNotEmpty()
-  @IsMongoId({ each: true })
-  @IsString({ each: true })
-  subtechnology: string[];
+  @IsNotEmpty()
+  @IsMongoId()
+  @IsString()
+  subtechnology: string;
 
   @ApiProperty({
     description: 'Array of IDs of languages associated with the tip',
-    example: ['609c6c5b0e468c3c24cfe8a5'],
-    type: [String],
+    example: '609c6c5b0e468c3c24cfe8a5',
+    type: String,
   })
-  @ArrayNotEmpty()
-  @IsMongoId({ each: true })
-  @IsString({ each: true })
-  lang: string[];
+  @IsNotEmpty()
+  @IsMongoId()
+  @IsString()
+  lang: string;
 
   @ApiProperty({
     description: 'Date and time when the tip was created',

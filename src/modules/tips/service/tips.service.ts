@@ -17,7 +17,6 @@ import {
 import { Level, LevelDocument } from 'src/setUp/level/entities/level.entity';
 import { Lang, LangDocument } from 'src/setUp/lang/entities/lang.entity';
 import { CreateTipDto } from '../dto/create-tip.dto';
-import { UpdateTipDto } from '../dto/update-tip.dto';
 
 @Injectable()
 export class TipsService {
@@ -31,123 +30,66 @@ export class TipsService {
     @InjectModel(Level.name) private levelModel: Model<LevelDocument>,
   ) {}
 
-  async create(createTipDto: CreateTipDto): Promise<Tip> {
-    try {
-      await this.validateReferences(createTipDto);
+  async create(createDto: CreateTipDto): Promise<Tip> {
+    const level = await this.levelModel.findById(createDto.level);
+    if (!level) throw new NotFoundException('Technology not found');
 
-      const technologyDetails = await this.getEntitiesDetails(
-        this.technologyModel,
-        createTipDto.technology,
-      );
-      const subtechnologyDetails = await this.getEntitiesDetails(
-        this.subtechnologyModel,
-        createTipDto.subtechnology,
-      );
-      const langDetails = await this.getEntitiesDetails(
-        this.langModel,
-        createTipDto.lang,
-      );
-      const levelDetails = await this.getEntitiesDetails(
-        this.levelModel,
-        createTipDto.level,
-      );
+    const technology = await this.technologyModel.findById(
+      createDto.technology,
+    );
+    if (!technology) throw new NotFoundException('Technology not found');
 
-      const createdTip = new this.tipModel({
-        ...createTipDto,
-        technology: technologyDetails,
-        subtechnology: subtechnologyDetails,
-        lang: langDetails,
-        level: levelDetails,
-      });
+    const subtechnology = await this.subtechnologyModel.findById(
+      createDto.subtechnology,
+    );
+    if (!subtechnology) throw new NotFoundException('subtechnology not found');
 
-      return createdTip.save();
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
+    const lang = await this.langModel.findById(createDto.lang);
+    if (!lang) throw new NotFoundException('lang not found');
+
+    const data = {
+      multimedia_url: createDto.multimedia_url,
+      title: createDto.title,
+      body: createDto.body,
+      link: createDto.link,
+      available: true,
+      level: level.name,
+      technology: technology.name,
+      subtechnology: subtechnology.name,
+      lang: lang.name,
+      createdAt: createDto.createdAt,
+      createBy: createDto.createBy,
+      updatedAt: createDto.updatedAt,
+      updateBy: createDto.updateBy,
+      deletedAt: createDto.deletedAt,
+      deleteBy: createDto.deleteBy,
+    };
+
+    return (await this.tipModel.create(data)).save();
   }
 
-  async findAll(
-    filters: any,
-  ): Promise<{ data: Tip[]; total: number; page: number; limit: number }> {
-    try {
-      const {
-        page = 1,
-        limit = 10,
-        title,
-        technology,
-        subtechnology,
-        lang,
-        level,
-      } = filters;
+  async findAll(filters: any): Promise<Tip[]> {
+    const query: any = {};
 
-      const query = this.tipModel
-        .find()
-        .populate('technology', 'name')
-        .populate('subtechnology', 'name')
-        .populate('lang', 'name')
-        .populate('level', 'name');
-
-      if (title) {
-        query.where('title', new RegExp(title, 'i'));
-      }
-      if (technology) {
-        const technologyIds = await this.getEntityIds(
-          this.technologyModel,
-          technology,
-        );
-        query.where('technology').in(technologyIds);
-      }
-      if (subtechnology) {
-        const subtechnologyIds = await this.getEntityIds(
-          this.subtechnologyModel,
-          subtechnology,
-        );
-        query.where('subtechnology').in(subtechnologyIds);
-      }
-      if (lang) {
-        const langIds = await this.getEntityIds(this.langModel, lang);
-        query.where('lang').in(langIds);
-      }
-      if (level) {
-        const levelIds = await this.getEntityIds(this.levelModel, level);
-        query.where('level').in(levelIds);
-      }
-
-      const total = await this.tipModel.countDocuments(query);
-      const data = await query
-        .skip((page - 1) * limit)
-        .limit(Number(limit))
-        .exec();
-
-      // Convertir las entidades a los nombres correspondientes
-      const formattedData = data.map((tip) => ({
-        ...tip.toObject(),
-        technology: tip.technology.map((tech: any) => tech.name),
-        subtechnology: tip.subtechnology.map((subtech: any) => subtech.name),
-        lang: tip.lang.map((language: any) => language.name),
-        level: tip.level.map((lvl: any) => lvl.name),
-      }));
-
-      return { data: formattedData, total, page, limit };
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
+    if (filters.level) {
+      query.level = filters.level;
     }
-  }
-
-  private async getEntityIds(
-    model: Model<any>,
-    names: string,
-  ): Promise<string[]> {
-    try {
-      const entities = await model
-        .find({ name: { $in: names.split(',') } }, '_id')
-        .exec();
-      return await entities.map((entity) => entity._id.toString());
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
+    if (filters.technology) {
+      query.technology = filters.technology;
     }
-  }
+    if (filters.subtechnology) {
+      query.subtechnology = filters.subtechnology;
+    }
+    if (filters.lang) {
+      query.lang = filters.lang;
+    }
 
+    const limit = filters.limit ? parseInt(filters.limit, 10) : 10;
+    const page = filters.page ? parseInt(filters.page, 10) : 1;
+    const skip = (page - 1) * limit;
+
+    return await this.tipModel.find(query).skip(skip).limit(limit).exec();
+  }
   async findOne(id: string): Promise<Tip> {
     try {
       const tip = await this.tipModel.findById(id).exec();
@@ -160,50 +102,51 @@ export class TipsService {
     }
   }
 
-  async update(id: string, updateTipDto: UpdateTipDto): Promise<Tip> {
-    try {
-      await this.validateReferences(updateTipDto);
+  // TODO: mejora de codigo segun nuevos cambios
+  // async update(id: string, updateTipDto: UpdateTipDto): Promise<Tip> {
+  //   try {
+  //     await this.validateReferences(updateTipDto);
 
-      const technologyDetails = await this.getEntitiesDetails(
-        this.technologyModel,
-        updateTipDto.technology,
-      );
-      const subtechnologyDetails = await this.getEntitiesDetails(
-        this.subtechnologyModel,
-        updateTipDto.subtechnology,
-      );
-      const langDetails = await this.getEntitiesDetails(
-        this.langModel,
-        updateTipDto.lang,
-      );
-      const levelDetails = await this.getEntitiesDetails(
-        this.levelModel,
-        updateTipDto.level,
-      );
+  //     const technologyDetails = await this.getEntitiesDetails(
+  //       this.technologyModel,
+  //       updateTipDto.technology,
+  //     );
+  //     const subtechnologyDetails = await this.getEntitiesDetails(
+  //       this.subtechnologyModel,
+  //       updateTipDto.subtechnology,
+  //     );
+  //     const langDetails = await this.getEntitiesDetails(
+  //       this.langModel,
+  //       updateTipDto.lang,
+  //     );
+  //     const levelDetails = await this.getEntitiesDetails(
+  //       this.levelModel,
+  //       updateTipDto.level,
+  //     );
 
-      const tip = await this.tipModel
-        .findByIdAndUpdate(
-          id,
-          {
-            ...updateTipDto,
-            technology: technologyDetails,
-            subtechnology: subtechnologyDetails,
-            lang: langDetails,
-            level: levelDetails,
-          },
-          { new: true },
-        )
-        .exec();
+  //     const tip = await this.tipModel
+  //       .findByIdAndUpdate(
+  //         id,
+  //         {
+  //           ...updateTipDto,
+  //           technology: technologyDetails,
+  //           subtechnology: subtechnologyDetails,
+  //           lang: langDetails,
+  //           level: levelDetails,
+  //         },
+  //         { new: true },
+  //       )
+  //       .exec();
 
-      if (!tip || tip.deletedAt) {
-        throw new NotFoundException('Tip not found');
-      }
+  //     if (!tip || tip.deletedAt) {
+  //       throw new NotFoundException('Tip not found');
+  //     }
 
-      return await tip;
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
-  }
+  //     return await tip;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException(error.message);
+  //   }
+  // }
 
   async delete(id: string): Promise<void> {
     try {
@@ -218,32 +161,33 @@ export class TipsService {
     }
   }
 
-  async validateReferences(tipDto: CreateTipDto | UpdateTipDto): Promise<void> {
-    try {
-      await this.validateEntityReferences(
-        this.technologyModel,
-        tipDto.technology,
-        'Some technologies not found',
-      );
-      await this.validateEntityReferences(
-        this.subtechnologyModel,
-        tipDto.subtechnology,
-        'Some subtechnologies not found',
-      );
-      await this.validateEntityReferences(
-        this.langModel,
-        tipDto.lang,
-        'Some languages not found',
-      );
-      await this.validateEntityReferences(
-        this.levelModel,
-        tipDto.level,
-        'Some levels not found',
-      );
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
-  }
+  // TODO: mejora de codigo segun nuevos cambios
+  // async validateReferences(tipDto: CreateTipDto | UpdateTipDto): Promise<void> {
+  //   try {
+  //     await this.validateEntityReferences(
+  //       this.technologyModel,
+  //       tipDto.technology,
+  //       'Some technologies not found',
+  //     );
+  //     await this.validateEntityReferences(
+  //       this.subtechnologyModel,
+  //       tipDto.subtechnology,
+  //       'Some subtechnologies not found',
+  //     );
+  //     await this.validateEntityReferences(
+  //       this.langModel,
+  //       tipDto.lang,
+  //       'Some languages not found',
+  //     );
+  //     await this.validateEntityReferences(
+  //       this.levelModel,
+  //       tipDto.level,
+  //       'Some levels not found',
+  //     );
+  //   } catch (error) {
+  //     throw new InternalServerErrorException(error.message);
+  //   }
+  // }
 
   private async getEntitiesDetails(
     model: Model<any>,
@@ -279,59 +223,60 @@ export class TipsService {
     }
   }
 
-  async getRandomTips(filters: CreateTipDto | UpdateTipDto): Promise<any[]> {
-    try {
-      const { technology, subtechnology, lang, level, limit } = filters;
-      const query = this.tipModel.find();
+  // TODO: mejora de codigo segun nuevos cambios
+  // async getRandomTips(filters: CreateTipDto | UpdateTipDto): Promise<any[]> {
+  //   try {
+  //     const { technology, subtechnology, lang, level, limit } = filters;
+  //     const query = this.tipModel.find();
 
-      if (technology && technology.length > 0) {
-        const technologyIds = await this.getEntityIdsByName(
-          this.technologyModel,
-          technology,
-        );
-        query.where('technology').in(technologyIds);
-      }
-      if (subtechnology && subtechnology.length > 0) {
-        const subtechnologyIds = await this.getEntityIdsByName(
-          this.subtechnologyModel,
-          subtechnology,
-        );
-        query.where('subtechnology').in(subtechnologyIds);
-      }
-      if (lang && lang.length > 0) {
-        const langIds = await this.getEntityIdsByName(this.langModel, lang);
-        query.where('lang').in(langIds);
-      }
-      if (level && level.length > 0) {
-        const levelIds = await this.getEntityIdsByName(this.levelModel, level);
-        query.where('level').in(levelIds);
-      }
+  //     if (technology && technology.length > 0) {
+  //       const technologyIds = await this.getEntityIdsByName(
+  //         this.technologyModel,
+  //         technology,
+  //       );
+  //       query.where('technology').in(technologyIds);
+  //     }
+  //     if (subtechnology && subtechnology.length > 0) {
+  //       const subtechnologyIds = await this.getEntityIdsByName(
+  //         this.subtechnologyModel,
+  //         subtechnology,
+  //       );
+  //       query.where('subtechnology').in(subtechnologyIds);
+  //     }
+  //     if (lang && lang.length > 0) {
+  //       const langIds = await this.getEntityIdsByName(this.langModel, lang);
+  //       query.where('lang').in(langIds);
+  //     }
+  //     if (level && level.length > 0) {
+  //       const levelIds = await this.getEntityIdsByName(this.levelModel, level);
+  //       query.where('level').in(levelIds);
+  //     }
 
-      const tips = await query.exec();
-      const randomTips = this.shuffleArray(tips).slice(0, limit);
+  //     const tips = await query.exec();
+  //     const randomTips = this.shuffleArray(tips).slice(0, limit);
 
-      // Convertir las entidades a los nombres correspondientes
-      const formattedData = await Promise.all(
-        randomTips.map(async (tip) => ({
-          ...tip.toObject(),
-          technology: await this.getNamesByIds(
-            this.technologyModel,
-            tip.technology,
-          ),
-          subtechnology: await this.getNamesByIds(
-            this.subtechnologyModel,
-            tip.subtechnology,
-          ),
-          lang: await this.getNamesByIds(this.langModel, tip.lang),
-          level: await this.getNamesByIds(this.levelModel, tip.level),
-        })),
-      );
+  //     // Convertir las entidades a los nombres correspondientes
+  //     const formattedData = await Promise.all(
+  //       randomTips.map(async (tip) => ({
+  //         ...tip.toObject(),
+  //         technology: await this.getNamesByIds(
+  //           this.technologyModel,
+  //           tip.technology,
+  //         ),
+  //         subtechnology: await this.getNamesByIds(
+  //           this.subtechnologyModel,
+  //           tip.subtechnology,
+  //         ),
+  //         lang: await this.getNamesByIds(this.langModel, tip.lang),
+  //         level: await this.getNamesByIds(this.levelModel, tip.level),
+  //       })),
+  //     );
 
-      return formattedData;
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
-  }
+  //     return formattedData;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException(error.message);
+  //   }
+  // }
 
   private async getEntityIdsByName(
     model: Model<any>,
