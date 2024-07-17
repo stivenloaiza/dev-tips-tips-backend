@@ -38,7 +38,7 @@ export class SubtechnologyService {
     return await this.subtechnologyModel.find({ id: { $in: ids } }).exec();
   }
 
-  async delete(id: number): Promise<Subtechnology> {
+  async delete(id: string): Promise<Subtechnology> {
     const subtechnology = await this.subtechnologyModel
       .findOneAndDelete({ id })
       .exec();

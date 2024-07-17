@@ -30,7 +30,7 @@ export class TechnologyService {
     return await this.technologyModel.find({ id: { $in: ids } }).exec();
   }
 
-  async delete(id: number): Promise<Technology> {
+  async delete(id: string): Promise<Technology> {
     const technology = await this.technologyModel
       .findOneAndDelete({ id })
       .exec();

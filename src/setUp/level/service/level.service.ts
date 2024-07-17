@@ -27,7 +27,7 @@ export class LevelService {
     return this.levelModel.find({ id: { $in: ids } }).exec();
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const result = await this.levelModel.deleteOne({ id }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException(`Level with id ${id} not found`);
