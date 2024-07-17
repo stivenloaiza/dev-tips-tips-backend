@@ -19,6 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Level } from '../entities/level.entity';
 
 @ApiTags('Levels')
 @Controller('levels')
@@ -73,6 +74,12 @@ export class LevelController {
     description: 'Internal server error.',
   })
   async findAll(@Query('page') page: number, @Query('limit') limit: number) {
+  async createlevel(@Body() createDto: CreateLevelDto): Promise<Level> {
+    return await this.levelService.create(createDto);
+  }
+
+  @Get('all')
+  async getAll(@Query('page') page: number, @Query('limit') limit: number) {
     return this.levelService.findAll(page, limit);
   }
 

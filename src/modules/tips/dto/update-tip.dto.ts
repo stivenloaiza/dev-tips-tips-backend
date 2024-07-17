@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateTipDto } from './create-tip.dto';
 
@@ -8,6 +8,10 @@ export class UpdateTipDto extends PartialType(CreateTipDto) {
     description: 'Date and time when the tip was last updated',
     example: '2023-01-02T00:00:00Z',
   })
+  @IsNumber()
+  @IsOptional()
+  limit?: number;
+
   @IsDate()
   @IsOptional()
   @Type(() => Date)

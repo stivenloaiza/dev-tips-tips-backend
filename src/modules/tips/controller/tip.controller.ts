@@ -9,6 +9,7 @@ import {
   Query,
   HttpStatus,
   HttpException,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateTipDto } from '../dto/create-tip.dto';
 import { UpdateTipDto } from '../dto/update-tip.dto';
@@ -23,6 +24,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
+import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
 
 @ApiTags('Tips')
 @Controller('tips')
@@ -47,6 +49,20 @@ export class TipsController {
   async create(@Body() createTipDto: CreateTipDto) {
     try {
       return await this.tipsService.create(createTipDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Post('random')
+  @ApiOperation({ summary: 'Get random tips based on filters' })
+  @ApiResponse({
+    status: 200,
+    description: 'Random list of tips based on filters.',
+  })
+  async RandomTips(@Body() filters: CreateTipDto) {
+    try {
+      return await this.tipsService.getRandomTips(filters);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -218,5 +234,11 @@ export class TipsController {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+  // Controlador para Enviar Tips
+  @Post('send')
+  @UseGuards(TipGuard)
+  async sendTip(@Body('userId') userId: string, @Body('tipId') tipId: string) {
+    return { message: `${userId} - ${tipId} - Tip enviado con éxito` };
   }
 }

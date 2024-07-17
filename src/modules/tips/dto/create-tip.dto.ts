@@ -6,6 +6,7 @@ import {
   IsDateString,
   ArrayNotEmpty,
   IsMongoId,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateTipDto {
@@ -15,7 +16,7 @@ export class CreateTipDto {
   })
   @IsOptional()
   @IsString()
-  img_url?: string;
+  multimedia_url?: string;
 
   @ApiProperty({
     description: 'Title of the tip',
@@ -133,4 +134,8 @@ export class CreateTipDto {
   @IsOptional()
   @IsString()
   deleteBy?: string;
+
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
 }

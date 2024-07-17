@@ -17,7 +17,7 @@ export class SubtechnologyService {
   async create(
     createSubtechnologyDto: CreateSubtechnologyDto,
   ): Promise<Subtechnology> {
-    const createdSubtechnology = new this.subtechnologyModel(
+    const createdSubtechnology = await new this.subtechnologyModel(
       createSubtechnologyDto,
     );
     return createdSubtechnology.save();
@@ -27,7 +27,7 @@ export class SubtechnologyService {
     page: number = 1,
     limit: number = 10,
   ): Promise<Subtechnology[]> {
-    return this.subtechnologyModel
+    return await this.subtechnologyModel
       .find()
       .skip((page - 1) * limit)
       .limit(limit)
@@ -35,7 +35,7 @@ export class SubtechnologyService {
   }
 
   async findByIds(ids: number[]): Promise<Subtechnology[]> {
-    return this.subtechnologyModel.find({ id: { $in: ids } }).exec();
+    return await this.subtechnologyModel.find({ id: { $in: ids } }).exec();
   }
 
   async delete(id: string): Promise<Subtechnology> {

@@ -12,12 +12,14 @@ export class TechnologyService {
   ) {}
 
   async create(createTechnologyDto: CreateTechnologyDto): Promise<Technology> {
-    const createdTechnology = new this.technologyModel(createTechnologyDto);
+    const createdTechnology = await new this.technologyModel(
+      createTechnologyDto,
+    );
     return createdTechnology.save();
   }
 
   async findAll(page: number = 1, limit: number = 10): Promise<Technology[]> {
-    return this.technologyModel
+    return await this.technologyModel
       .find()
       .skip((page - 1) * limit)
       .limit(limit)
@@ -25,7 +27,7 @@ export class TechnologyService {
   }
 
   async findByIds(ids: number[]): Promise<Technology[]> {
-    return this.technologyModel.find({ id: { $in: ids } }).exec();
+    return await this.technologyModel.find({ id: { $in: ids } }).exec();
   }
 
   async delete(id: string): Promise<Technology> {

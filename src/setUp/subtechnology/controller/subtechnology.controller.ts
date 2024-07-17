@@ -41,10 +41,10 @@ export class SubtechnologyController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  create(
+  async createNew(
     @Body() createSubtechnologyDto: CreateSubtechnologyDto,
   ): Promise<Subtechnology> {
-    return this.subtechnologyService.create(createSubtechnologyDto);
+    return await this.subtechnologyService.create(createSubtechnologyDto);
   }
 
   @Get('all')
@@ -76,10 +76,12 @@ export class SubtechnologyController {
     description: 'Internal server error.',
   })
   findAll(
+
+  async getAll(
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<Subtechnology[]> {
-    return this.subtechnologyService.findAll(page, limit);
+    return await this.subtechnologyService.findAll(page, limit);
   }
 
   @Delete(':id')
@@ -98,5 +100,7 @@ export class SubtechnologyController {
   })
   delete(@Param('_id') id: string): Promise<Subtechnology> {
     return this.subtechnologyService.delete(id);
+  async remove(@Param('_id') id: number): Promise<Subtechnology> {
+    return await this.subtechnologyService.delete(id);
   }
 }
