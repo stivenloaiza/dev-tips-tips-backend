@@ -11,7 +11,15 @@ import {
 import { TechnologyService } from '../service/technology.service';
 import { CreateTechnologyDto } from '../dto/create-technology.dto';
 import { Technology } from '../entities/technology.entity';
-import { ApiBadRequestResponse, ApiBody, ApiInternalServerErrorResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Technology')
 @Controller('technology')
@@ -23,7 +31,7 @@ export class TechnologyController {
   @ApiBody({ type: CreateTechnologyDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The Technology has been successfully created.'
+    description: 'The Technology has been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,

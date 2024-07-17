@@ -86,8 +86,7 @@ export class CreateTipDto {
   @IsString({ each: true })
   lang: string[];
 
-
-   @ApiProperty({
+  @ApiProperty({
     description: 'Date and time when the tip was created',
     example: '2023-01-01T00:00:00Z',
   })

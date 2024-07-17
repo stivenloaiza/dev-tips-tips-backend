@@ -4,7 +4,7 @@ import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class UpdateSubtechnologyDto extends PartialType(
   CreateSubtechnologyDto,
-){
+) {
   @ApiPropertyOptional({
     description: 'The date and time when the subtechnology was last updated',
     example: '2023-01-02T00:00:00Z',

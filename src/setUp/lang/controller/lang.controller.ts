@@ -15,7 +15,6 @@ import {
   ApiBody,
   ApiInternalServerErrorResponse,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,

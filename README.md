@@ -3,153 +3,137 @@
 </p>
 
 
-## Description
 
-This project is a collection of NestJS-based microservices for managing tips, authentication, logs, and API key subscriptions. Each microservice is designed to handle specific tasks while ensuring efficient and scalable server-side operations.
+# **Microservices Tip Management**
 
-## Table of Contents
+This project focuses on developing multiple microservices to manage technological tips, incorporating categories such as levels, languages, programming technologies, and sub-technologies. The main goal is to integrate all these categories into a single technological tip, allowing for filtered searches according to specific needs. The project adopts robust development practices to ensure reliability and scalability.
 
-- [Description](#description)
-- [Table of Contents](#table-of-contents)
-- [Installation](#installation)
-- [Running the app](#running-the-app)
-- [Development](#development)
-- [Watch mode](#watch-mode)
-- [Production mode](#production-mode)
-- [Test](#test)
-- [Swagger Documentation](#swagger-documentation)
-- [Microservices Overview](#microservices-overview)
-- [Tips Microservice](#tips-microservice)
-- [Contribution](#contribution)
-- [Support](#support)
-- [Stay in touch](#stay-in-touch)
-- [License](#license)
 
-## Installation
+## Content Table
 
-To install the project, follow these steps:
+* Characteristics.
+* Functionalities.
+* Requirements.
+* Local Configuration.
+* Running the App.
+* Queries in Postman.
+* Gitflow Branching Strategy
+* Participants.
+* License.
+
+## Characteristics
+
+* Microservice Management
+* Category Integration
+* Search Filtering
+* Robust Development Practices
+
+## Functionalities
+
+**Tip Management**
+* Registration and management of technological tips.
+* Organization of tips by levels, technologies, sub-technologies, and languages.
+* Efficient search and filtering of tips.
+
+**Technologies Used**
+* **NestJS:** Framework for building scalable and maintainable microservices.
+* **TypeScript:** Programming language that provides static typing and advanced development features.
+* **MongoDB:** NoSQL database used to store tips and user records.
+* **Swagger:** Tool for API documentation that facilitates the creation of interactive documentation.
+* **Confluence:** Platform for team documentation and collaboration.
+
+**Development Practices**
+* **Traceability:** Logging all user requests for monitoring and auditing purposes.
+* **Code Best Practices:** Use of design patterns, SOLID principles, and code reviews.
+* **Testing:** Implementation of unit, integration, and end-to-end tests to ensure software quality.
+* **Extensive Documentation:** Creation of documentation in Swagger and Confluence to facilitate the use and maintenance of the microservices.
+
+## Local Configuration
+
+To run the project locally, clone the repository and set up the necessary environment variables for the database.
 
 1. Clone the repository:
 
-```bash
-$ git clone https://github.com/yourusername/yourrepository.git
-```
+    ``` bash
+    git clone https://github.com/stivenloaiza/dev-tips-tips-backend.git
+    cd dev-tips-tips-backend
+    ```
 
-2. Navigate to the project directory:
+2. Install the necessary dependencies:
 
-```bash
-$ cd yourrepository
-```
+    ``` bash
+    npm install
+    ```
 
-3. Install the dependencies:
+3. Copy the .env.example file to a new .env file and configure the necessary environment variables:
 
-```bash
-$ npm install
-```
+    ``` bash
+    cp .env.example .env    
+    ```
 
-## Running the app
+Edit the .env file and configure the following values:
 
-Set the following environment variables in your `.env` file:
+    // EXECUTION ENVIRONMENT (local | production)
+    ENVIRONMENT =
 
-```dotenv
-#* EXECUTION ENVIRONMENT (local | production)
-ENVIRONMENT=local
+    // PERSISTENCE LOCAL
+    // Local connection example: mongodb://localhost:27017/{DB_NAME_LOCAL}
+    DB_CONNECTION = mongodb://
+    DB_HOST_LOCAL = localhost:27017/
+    DB_NAME_LOCAL =
 
-# Local connection example: mongodb://localhost:27017/{DB_NAME_LOCAL}
+    // PERSISTENCE PRODUCTION
+    // Production connection example: mongodb+srv://{DB_USERNAME}:       {DB_PASSWORD}{DB_HOST_PRODUCTION}/{DB_NAME_PRODUCTION}?retryWrites=true&w=majority
+    DB_HOST_REMOTE =
+    DB_NAME_REMOTE =
+    DB_USERNAME =
+    DB_PASSWORD =    
 
-DB_CONNECTION=mongodb://
-DB_HOST_LOCAL=localhost:27017/
-DB_NAME_LOCAL=your_local_db_name
+These steps will allow you to execute the project. Additionally, you must develop the environment variables according to your needs.
 
-# Production connection example: mongodb+srv://{DB_USERNAME}:{DB_PASSWORD}{DB_HOST_REMOTE}/{DB_NAME_REMOTE}?retryWrites=true&w=majority
-
-DB_HOST_REMOTE=your_remote_host
-DB_NAME_REMOTE=your_remote_db_name
-DB_USERNAME=your_db_username
-DB_PASSWORD=your_db_password
-```
-
-### Development
-
-To start the application in development mode:
+## Running the App
 
 ```bash
+# development
 $ npm run start
-```
 
-### Watch mode
-
-To start the application in watch mode (automatically restarts on code changes):
-
-```bash
+# watch mode
 $ npm run start:dev
-```
 
-### Production mode
-
-To start the application in production mode:
-
-```bash
+# production mode
 $ npm run start:prod
 ```
 
-## Test
+## Queries in Postman
 
-To run the tests, use the following commands:
+...
 
-```bash
-# unit tests
-$ npm run test
 
-# e2e tests
-$ npm run test:e2e
+## Gitflow Branching Strategy
 
-# test coverage
-$ npm run test:cov
-```
+This project follows the Gitflow strategy, a robust model for software development. Here is how the branches are organized and their purpose:
 
-## Swagger Documentation
+* `main:` Main branch with stable code for production. 
+* `dev:` Development branch with the latest features before production. 
+* `feat/AT-20-NameTask:` Branch of tasks with functionalities, identified by a Jira ID in addition to the task name.
 
-After starting the app, navigate to `http://localhost:3000/api` to view the Swagger documentation for the available endpoints. Swagger provides a detailed overview of each endpoint, including the request and response formats, parameters, and possible error codes.
+The work is integrated into the 'dev' branch for integration testing. Once 'dev' is stable and ready to be released, it is merged into 'main'.
 
-## Microservices Overview
+If you want to contribute to the project, create a new branch from 'dev' using the appropriate prefix (feat/AT-20-NameTask). After finishing your work and testing, open a Pull Request towards 'dev'.
 
-### Tips Microservice
+## Participants
 
-The Tips Microservice is responsible for managing tips with CRUD operations. It includes relationships to other entities such as Technology, Subtechnology, Lang, and Level.
+The participants in the creation process during the "Microservices with Authentication and Tip Management" project were:
 
-#### Endpoints
-
-- `POST /tips` - Create a new tip
-- `GET /tips` - Retrieve all tips with optional filters and pagination
-- `GET /tips/:id` - Retrieve a single tip by ID
-- `PUT /tips/:id` - Update an existing tip by ID
-- `DELETE /tips/:id` - Delete a tip by ID
-
-## Contribution
-
-Contributions are welcome! Please follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch with a descriptive name (`feature/new-feature || feat/your-name` or `bugfix/fix-bug`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add some feature'`).
-5. Push to your branch (`git push origin feature/new-feature`).
-6. Create a pull request.
-
-Please ensure your code adheres to the project's coding standards and includes appropriate tests.
-
-## Support
-
-This project is an MIT-licensed open source project. It grows thanks to the sponsors and support from the amazing community. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Cristian Manco](https://github.com/cristianManco)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+* Julian Roman.
+* Camilo Manco.
+* Angelica Hernandez.
+* Hernan
+* Camila Sepulveda
 
 ## License
+
+
 
 Nest is [MIT licensed](LICENSE).
 ```

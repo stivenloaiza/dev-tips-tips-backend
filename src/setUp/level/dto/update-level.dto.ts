@@ -3,7 +3,7 @@ import { IsDate, IsOptional, IsString } from 'class-validator';
 import { CreateLevelDto } from './create-level.dto';
 
 export class UpdateLevelDto extends PartialType(CreateLevelDto) {
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The last update date of the level.',
     example: '2024-08-15T14:30:00Z',
   })
@@ -11,7 +11,7 @@ export class UpdateLevelDto extends PartialType(CreateLevelDto) {
   @IsDate()
   updatedAt?: Date | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The updater of the level.',
     example: 'admin',
   })
@@ -19,7 +19,7 @@ export class UpdateLevelDto extends PartialType(CreateLevelDto) {
   @IsString()
   updateBy?: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The deletion date of the level.',
     example: '2024-08-15T15:45:00Z',
   })
@@ -27,7 +27,7 @@ export class UpdateLevelDto extends PartialType(CreateLevelDto) {
   @IsDate()
   deletedAt?: Date | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The deleter of the level.',
     example: 'admin',
   })

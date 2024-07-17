@@ -1,14 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateLevelDto {
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The name of the level.',
     example: 'Junior',
   })
@@ -16,7 +10,7 @@ export class CreateLevelDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The creation date of the level.',
     example: '2024-07-15T12:00:00Z',
   })
@@ -24,7 +18,7 @@ export class CreateLevelDto {
   @IsDate()
   createdAt?: Date | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The creator of the level.',
     example: 'admin',
   })
@@ -32,7 +26,7 @@ export class CreateLevelDto {
   @IsString()
   createBy?: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The last update date of the level.',
     example: '2024-07-15T14:30:00Z',
   })
@@ -40,7 +34,7 @@ export class CreateLevelDto {
   @IsDate()
   updatedAt?: Date | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The updater of the level.',
     example: 'admin',
   })
@@ -48,7 +42,7 @@ export class CreateLevelDto {
   @IsString()
   updateBy?: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The deletion date of the level.',
     example: '2024-07-15T15:45:00Z',
   })
@@ -56,7 +50,7 @@ export class CreateLevelDto {
   @IsDate()
   deletedAt?: Date | null;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The deleter of the level.',
     example: 'admin',
   })

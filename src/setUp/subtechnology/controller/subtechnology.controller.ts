@@ -11,7 +11,15 @@ import {
 import { SubtechnologyService } from '../service/subtechnology.service';
 import { CreateSubtechnologyDto } from '../dto/create-subtechnology.dto';
 import { Subtechnology } from '../entities/subtechnology.entity';
-import { ApiBadRequestResponse, ApiBody, ApiInternalServerErrorResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Sub-Technology')
 @Controller('subtechnology')
@@ -23,7 +31,7 @@ export class SubtechnologyController {
   @ApiBody({ type: CreateSubtechnologyDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The Sub-Technology has been successfully created.'
+    description: 'The Sub-Technology has been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,

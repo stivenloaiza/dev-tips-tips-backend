@@ -10,7 +10,15 @@ import {
 } from '@nestjs/common';
 import { LevelService } from '../service/level.service';
 import { CreateLevelDto } from '../dto/create-level.dto';
-import { ApiBadRequestResponse, ApiBody, ApiInternalServerErrorResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Levels')
 @Controller('levels')
@@ -22,7 +30,7 @@ export class LevelController {
   @ApiBody({ type: CreateLevelDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The Level has been successfully created.'
+    description: 'The Level has been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,

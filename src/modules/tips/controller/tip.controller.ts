@@ -12,7 +12,16 @@ import {
 } from '@nestjs/common';
 import { CreateTipDto } from '../dto/create-tip.dto';
 import { UpdateTipDto } from '../dto/update-tip.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody, ApiInternalServerErrorResponse, ApiBadRequestResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiBadRequestResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
 
 @ApiTags('Tips')
@@ -25,7 +34,7 @@ export class TipsController {
   @ApiBody({ type: CreateTipDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The Tips has been successfully created.'
+    description: 'The Tips has been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -70,7 +79,7 @@ export class TipsController {
     name: 'technology',
     required: false,
     type: String,
-     description: 'Filter by technology',
+    description: 'Filter by technology',
     example: '609c6c5b0e468c3c24cfe8a5',
   })
   @ApiQuery({
