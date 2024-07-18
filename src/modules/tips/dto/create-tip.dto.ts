@@ -45,6 +45,7 @@ export class CreateTipDto {
     example: true,
   })
   @IsBoolean()
+  @IsOptional()
   available: boolean;
 
   @ApiProperty({
@@ -72,9 +73,9 @@ export class CreateTipDto {
     example: '609c6c5b0e468c3c24cfe8a5',
     type: String,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
-  @IsString()
+  @IsString({ each: true })
   subtechnology: string;
 
   @ApiProperty({
