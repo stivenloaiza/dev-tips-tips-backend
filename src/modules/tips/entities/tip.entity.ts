@@ -17,7 +17,7 @@ export class Tip {
   @Prop()
   link: string;
 
-  @Prop({ required: true })
+  @Prop({ default: true })
   available: boolean;
 
   @Prop()

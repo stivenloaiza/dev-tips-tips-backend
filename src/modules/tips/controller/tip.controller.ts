@@ -9,8 +9,10 @@ import {
   HttpStatus,
   HttpException,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { CreateTipDto } from '../dto/create-tip.dto';
+import { UpdateTipDto } from '../dto/update-tip.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -34,7 +36,7 @@ export class TipsController {
   @ApiBody({ type: CreateTipDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The Tips has been successfully created.',
+    description: 'The Tip has been successfully created.',
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -47,21 +49,6 @@ export class TipsController {
   async create(@Body() create: CreateTipDto) {
     return this.tipsService.create(create);
   }
-
-  // TODO: mejora de codigo segun nuevos cambios
-  // @Post('random')
-  // @ApiOperation({ summary: 'Get random tips based on filters' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Random list of tips based on filters.',
-  // })
-  // async RandomTips(@Body() filters: CreateTipDto) {
-  //   try {
-  //     return await this.tipsService.getRandomTips(filters);
-  //   } catch (error) {
-  //     throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
-  // }
 
   @Get('all')
   @ApiOperation({ summary: 'Obtain all tips with filters and pagination' })
@@ -98,14 +85,6 @@ export class TipsController {
     required: false,
     type: String,
     description: 'Filter by subtechnology',
-    example: 'F609c6c5b0e468c3c24cfe8a5unctions',
-  })
-  @ApiQuery({ name: 'lang', required: false, type: String, example: 'English' })
-  @ApiQuery({
-    name: 'level',
-    required: false,
-    type: String,
-    description: 'Filter by level',
     example: '609c6c5b0e468c3c24cfe8a5',
   })
   @ApiQuery({
@@ -113,6 +92,13 @@ export class TipsController {
     required: false,
     type: String,
     description: 'Filter by language',
+    example: 'English',
+  })
+  @ApiQuery({
+    name: 'level',
+    required: false,
+    type: String,
+    description: 'Filter by level',
     example: '609c6c5b0e468c3c24cfe8a5',
   })
   @ApiResponse({
@@ -130,13 +116,22 @@ export class TipsController {
   async findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-    @Query('level') level?: string,
+    @Query('title') title?: string,
     @Query('technology') technology?: string,
     @Query('subtechnology') subtechnology?: string,
     @Query('lang') lang?: string,
+    @Query('level') level?: string,
   ) {
-    const all = { page, limit, level, technology, subtechnology, lang };
-    return this.tipsService.findAll(all);
+    const filters = {
+      page,
+      limit,
+      title,
+      technology,
+      subtechnology,
+      lang,
+      level,
+    };
+    return this.tipsService.findAll(filters);
   }
 
   @Get(':id')
@@ -149,17 +144,17 @@ export class TipsController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'The Tip has been successfully deleted.',
+    description: 'Successfully retrieved the tip.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Invalid ID provided.',
+    description: 'Tip not found.',
   })
   @ApiInternalServerErrorResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('_id') id: string) {
     try {
       return await this.tipsService.findOne(id);
     } catch (error) {
@@ -167,51 +162,56 @@ export class TipsController {
     }
   }
 
-  // TODO: mejora de codigo segun nuevos cambios
-  // @Put(':id')
-  // @ApiOperation({ summary: 'Update a tip by id' })
-  // @ApiParam({
-  //   name: 'id',
-  //   type: String,
-  //   description: 'ID of the tip to update',
-  //   example: '609c6c5b0e468c3c24cfe8a5',
-  // })
-  // @ApiBody({ type: UpdateTipDto })
-  // @ApiResponse({
-  //   status: HttpStatus.OK,
-  //   description: 'The Tip has been successfully deleted.',
-  // })
-  // @ApiResponse({
-  //   status: HttpStatus.NOT_FOUND,
-  //   description: 'Invalid ID provided.',
-  // })
-  // @ApiInternalServerErrorResponse({
-  //   status: HttpStatus.INTERNAL_SERVER_ERROR,
-  //   description: 'Internal server error.',
-  // })
-  // async update(@Param('id') id: string, @Body() updateTipDto: UpdateTipDto) {
-  //   try {
-  //     return await this.tipsService.update(id, updateTipDto);
-  //   } catch (error) {
-  //     throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
-  // }
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a tip by id' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the tip to update',
+    example: '609c6c5b0e468c3c24cfe8a5',
+  })
+  @ApiBody({ type: UpdateTipDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The Tip has been successfully updated.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Tip not found.',
+  })
+  @ApiInternalServerErrorResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Internal server error.',
+  })
+  async update(@Param('_id') id: string, @Body() updateTipDto: UpdateTipDto) {
+    try {
+      return await this.tipsService.update(id, updateTipDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Tip by ID' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the tip to delete',
+    example: '609c6c5b0e468c3c24cfe8a5',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The Tip has been successfully deleted.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Invalid ID provided.',
+    description: 'Tip not found.',
   })
   @ApiInternalServerErrorResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  async remove(@Param('id') id: string) {
+  async remove(@Param('_id') id: string) {
     try {
       await this.tipsService.delete(id);
       return { message: 'Tip deleted successfully' };
@@ -219,10 +219,28 @@ export class TipsController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  // Controlador para Enviar Tips
+
   @Post('send')
+  @ApiOperation({ summary: 'Send a tip' })
   @UseGuards(TipGuard)
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string', example: 'user123' },
+        tipId: { type: 'string', example: 'tip456' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Tip successfully sent.',
+  })
+  @ApiInternalServerErrorResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Internal server error.',
+  })
   async sendTip(@Body('userId') userId: string, @Body('tipId') tipId: string) {
-    return { message: `${userId} - ${tipId} - Tip enviado con éxito` };
+    return { message: `${userId} - ${tipId} - Tip sent successfully` };
   }
 }
