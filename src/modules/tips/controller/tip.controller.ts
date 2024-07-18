@@ -193,12 +193,6 @@ export class TipsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Tip by ID' })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'ID of the tip to delete',
-    example: '609c6c5b0e468c3c24cfe8a5',
-  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The Tip has been successfully deleted.',
