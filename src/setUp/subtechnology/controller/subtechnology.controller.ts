@@ -14,6 +14,7 @@ import { Subtechnology } from '../entities/subtechnology.entity';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiHeader,
   ApiInternalServerErrorResponse,
   ApiOperation,
   ApiQuery,
@@ -22,6 +23,10 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Sub-Technology')
+@ApiHeader({
+  name: 'x-api-key',
+  description: 'API key needed to access this endpoint',
+})
 @Controller('subtechnology')
 export class SubtechnologyController {
   constructor(private readonly subtechnologyService: SubtechnologyService) {}

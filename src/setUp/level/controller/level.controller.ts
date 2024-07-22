@@ -13,6 +13,7 @@ import { CreateLevelDto } from '../dto/create-level.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiHeader,
   ApiInternalServerErrorResponse,
   ApiOperation,
   ApiQuery,
@@ -22,6 +23,10 @@ import {
 import { Level } from '../entities/level.entity';
 
 @ApiTags('Levels')
+@ApiHeader({
+  name: 'x-api-key',
+  description: 'API key needed to access this endpoint',
+})
 @Controller('levels')
 export class LevelController {
   constructor(private readonly levelService: LevelService) {}

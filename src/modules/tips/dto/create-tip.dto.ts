@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsOptional,
   IsString,
@@ -23,6 +24,7 @@ export class CreateTipDto {
     example: 'Getting Started with TypeScript',
   })
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   title: string;
 
   @ApiProperty({
@@ -30,6 +32,7 @@ export class CreateTipDto {
     example: 'TypeScript is a strongly typed superset of JavaScript...',
   })
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   body: string;
 
   @ApiProperty({
@@ -50,7 +53,7 @@ export class CreateTipDto {
 
   @ApiProperty({
     description: 'Array of IDs of levels associated with the tip',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'junior',
     type: String,
   })
   @IsNotEmpty()
@@ -60,32 +63,35 @@ export class CreateTipDto {
 
   @ApiProperty({
     description: 'Array of IDs of technologies associated with the tip',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'java',
     type: String,
   })
   @IsNotEmpty()
   @IsMongoId()
   @IsString({ each: true })
+  @Transform(({ value }) => value.map((v: string) => v.toLowerCase()))
   technology: string;
 
   @ApiProperty({
     description: 'Array of IDs of subtechnologies associated with the tip',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'sprint boot',
     type: String,
   })
   @IsOptional()
   @IsMongoId()
   @IsString({ each: true })
+  @Transform(({ value }) => value.map((v: string) => v.toLowerCase()))
   subtechnology: string;
 
   @ApiProperty({
     description: 'Array of IDs of languages associated with the tip',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'spanish',
     type: String,
   })
   @IsNotEmpty()
   @IsMongoId()
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   lang: string;
 
   @ApiProperty({
@@ -102,6 +108,7 @@ export class CreateTipDto {
   })
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   createBy?: string;
 
   @ApiProperty({
@@ -118,6 +125,7 @@ export class CreateTipDto {
   })
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   updateBy?: string;
 
   @ApiProperty({
@@ -134,6 +142,7 @@ export class CreateTipDto {
   })
   @IsOptional()
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   deleteBy?: string;
 
   @IsOptional()

@@ -220,59 +220,7 @@ export class TipsService {
     }
   }
 
-  async getRandomTips(filters: any): Promise<any[]> {
-    try {
-      const { technology, subtechnology, lang, level, limit } = filters;
-      const query = this.tipModel.find();
-
-      if (technology) {
-        query.where('technology').equals(technology);
-      }
-      if (subtechnology) {
-        query.where('subtechnology').equals(subtechnology);
-      }
-      if (lang) {
-        query.where('lang').equals(lang);
-      }
-      if (level) {
-        query.where('level').equals(level);
-      }
-
-      const tips = await query.exec();
-      const randomTips = this.shuffleArray(tips).slice(0, limit);
-
-      // Convertir las entidades a los nombres correspondientes
-      const formattedData = await Promise.all(
-        randomTips.map(async (tip) => ({
-          ...tip.toObject(),
-          technology: await this.getNamesByIds(this.technologyModel, [
-            tip.technology,
-          ]),
-          subtechnology: await this.getNamesByIds(this.subtechnologyModel, [
-            tip.subtechnology,
-          ]),
-          lang: await this.getNamesByIds(this.langModel, [tip.lang]),
-          level: await this.getNamesByIds(this.levelModel, [tip.level]),
-        })),
-      );
-
-      return formattedData;
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
-  }
-
-  private async getNamesByIds(
-    model: Model<any>,
-    ids: string[],
-  ): Promise<string[]> {
-    try {
-      const entities = await model.find({ _id: { $in: ids } }, 'name').exec();
-      return entities.map((entity) => entity.name);
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
-  }
+  private previousTips: { [key: string]: string[] } = {};
 
   private shuffleArray(array: any[]): any[] {
     for (let i = array.length - 1; i > 0; i--) {
@@ -280,5 +228,66 @@ export class TipsService {
       [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+  }
+
+  private async generateKey(params: any): Promise<string> {
+    return await JSON.stringify(params);
+  }
+
+  async getRandomTips(
+    technologies?: string[],
+    subtechnologies?: string[],
+    langs?: string[],
+    levels?: string[],
+    limit = 5,
+  ): Promise<Tip[]> {
+    try {
+      const filters: any = {};
+
+      if (technologies?.length) {
+        filters.technology = { $in: technologies };
+      }
+
+      if (subtechnologies?.length) {
+        filters.subtechnology = { $in: subtechnologies };
+      }
+
+      if (langs?.length) {
+        filters.lang = { $in: langs };
+      }
+
+      if (levels?.length) {
+        filters.level = { $in: levels };
+      }
+
+      const tips = await this.tipModel.find(filters).exec();
+      if (tips.length === 0) {
+        throw new Error('No tips found for the provided filters');
+      }
+
+      const key = await this.generateKey(filters);
+      let availableTips = await tips.filter(
+        (tip) => !this.previousTips[key]?.includes(tip._id.toString()),
+      );
+      if (availableTips.length < limit) {
+        availableTips = tips;
+      }
+
+      const shuffledTips = await this.shuffleArray(availableTips);
+      const limitedTips = await shuffledTips.slice(0, limit);
+
+      if (!this.previousTips[key]) {
+        this.previousTips[key] = [];
+      }
+
+      await this.previousTips[key].push(
+        ...limitedTips.map((tip) => tip._id.toString()),
+      );
+      this.previousTips[key] = await this.previousTips[key].slice(-tips.length); // Keep the previous tips within the limit of available tips
+
+      return await limitedTips;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }
