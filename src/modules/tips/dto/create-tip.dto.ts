@@ -69,7 +69,6 @@ export class CreateTipDto {
   @IsNotEmpty()
   @IsMongoId()
   @IsString({ each: true })
-  @Transform(({ value }) => value.map((v: string) => v.toLowerCase()))
   technology: string;
 
   @ApiProperty({
@@ -80,7 +79,6 @@ export class CreateTipDto {
   @IsOptional()
   @IsMongoId()
   @IsString({ each: true })
-  @Transform(({ value }) => value.map((v: string) => v.toLowerCase()))
   subtechnology: string;
 
   @ApiProperty({
@@ -91,7 +89,6 @@ export class CreateTipDto {
   @IsNotEmpty()
   @IsMongoId()
   @IsString()
-  @Transform(({ value }) => value.toLowerCase())
   lang: string;
 
   @ApiProperty({
