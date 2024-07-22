@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsDate,
@@ -14,6 +15,7 @@ export class CreateTechnologyDto {
     example: 'Node.js',
   })
   @IsString()
+  @Transform(({ value }) => value.toLowerCase())
   @IsNotEmpty()
   name: string;
 

@@ -13,6 +13,7 @@ import { CreateLangDto } from '../dto/create-lang.dto';
 import { Lang } from '../entities/lang.entity';
 import {
   ApiBody,
+  ApiHeader,
   ApiInternalServerErrorResponse,
   ApiOperation,
   ApiQuery,
@@ -20,7 +21,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('Languages')
+@ApiTags('Langs')
+@ApiHeader({
+  name: 'x-api-key',
+  description: 'API key needed to access this endpoint',
+})
 @Controller('lang')
 export class LangController {
   constructor(private readonly langService: LangService) {}

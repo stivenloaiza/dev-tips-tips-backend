@@ -22,11 +22,17 @@ import {
   ApiInternalServerErrorResponse,
   ApiBadRequestResponse,
   ApiParam,
+  ApiHeader,
 } from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
 import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
+import { Tip } from '../entities/tip.entity';
 
 @ApiTags('Tips')
+@ApiHeader({
+  name: 'x-api-key',
+  description: 'API key needed to access this endpoint',
+})
 @Controller('tips')
 export class TipsController {
   constructor(private readonly tipsService: TipsService) {}
@@ -78,14 +84,14 @@ export class TipsController {
     required: false,
     type: String,
     description: 'Filter by technology',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'Javascript',
   })
   @ApiQuery({
     name: 'subtechnology',
     required: false,
     type: String,
     description: 'Filter by subtechnology',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'Reactjs',
   })
   @ApiQuery({
     name: 'lang',
@@ -99,7 +105,7 @@ export class TipsController {
     required: false,
     type: String,
     description: 'Filter by level',
-    example: '609c6c5b0e468c3c24cfe8a5',
+    example: 'Senior',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -234,7 +240,48 @@ export class TipsController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'Internal server error.',
   })
-  async sendTip(@Body('userId') userId: string, @Body('tipId') tipId: string) {
+  async sendTip(@Body('userId') userId: string, @Body('_id') tipId: string) {
     return { message: `${userId} - ${tipId} - Tip sent successfully` };
+  }
+
+  @Post('random')
+  @ApiOperation({ summary: 'Get random filtered tips' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        technology: {
+          type: 'array',
+          items: { type: 'string' },
+          example: ['Java', 'Python', 'JavaScript'],
+        },
+        limit: { type: 'number', example: 2 },
+      },
+      required: [],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Random tips successfully obtained',
+    type: [Tip],
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  async getRandomTips(
+    @Body('technology') technology?: string[],
+    @Body('subtechnology') subtechnology?: string[],
+    @Body('lang') lang?: string[],
+    @Body('level') level?: string[],
+    @Body('limit') limit = 5,
+  ): Promise<Tip[]> {
+    return this.tipsService.getRandomTips(
+      technology,
+      subtechnology,
+      lang,
+      level,
+      limit,
+    );
   }
 }
