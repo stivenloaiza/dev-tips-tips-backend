@@ -37,6 +37,28 @@ import { Tip } from '../entities/tip.entity';
 export class TipsController {
   constructor(private readonly tipsService: TipsService) {}
 
+
+  @Get('random')
+  @ApiOperation({ summary: 'Get random tips based on filters' })
+  @ApiResponse({ status: 200, description: 'Random tips based on filters' })
+  @ApiQuery({ name: 'technology', required: false, description: 'Filter by technology' })
+  @ApiQuery({ name: 'lang', required: false, description: 'Filter by language' })
+  @ApiQuery({ name: 'level', required: false, description: 'Filter by level' })
+  @ApiQuery({ name: 'limit', required: true, description: 'Number of tips to retrieve', example: 4 })
+  async getRandomTips(
+    @Query('technology') technology?: string,
+    @Query('lang') lang?: string,
+    @Query('level') level?: string,
+    @Query('limit') limit = 4
+  ): Promise<Tip[]> {
+    const filters = {
+      technology,
+      lang,
+      level,
+      limit: parseInt(limit as any, 10), 
+    };
+    return this.tipsService.getRandomTips(filters);
+  }
   @Post('new')
   @ApiOperation({ summary: 'Create a new tip' })
   @ApiBody({ type: CreateTipDto })
@@ -244,44 +266,5 @@ export class TipsController {
     return { message: `${userId} - ${tipId} - Tip sent successfully` };
   }
 
-  @Post('random')
-  @ApiOperation({ summary: 'Get random filtered tips' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        technology: {
-          type: 'array',
-          items: { type: 'string' },
-          example: ['Java', 'Python', 'JavaScript'],
-        },
-        limit: { type: 'number', example: 2 },
-      },
-      required: [],
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Random tips successfully obtained',
-    type: [Tip],
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error',
-  })
-  async getRandomTips(
-    @Body('technology') technology?: string[],
-    @Body('subtechnology') subtechnology?: string[],
-    @Body('lang') lang?: string[],
-    @Body('level') level?: string[],
-    @Body('limit') limit = 5,
-  ): Promise<Tip[]> {
-    return this.tipsService.getRandomTips(
-      technology,
-      subtechnology,
-      lang,
-      level,
-      limit,
-    );
-  }
+  
 }
