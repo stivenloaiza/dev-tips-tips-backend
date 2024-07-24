@@ -220,74 +220,26 @@ export class TipsService {
     }
   }
 
-  private previousTips: { [key: string]: string[] } = {};
-
-  private shuffleArray(array: any[]): any[] {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+  async getRandomTips(filters: { technology?: string; lang?: string; level?: string; limit: number }): Promise<Tip[]> {
+    const { technology, lang, level, limit } = filters;
+  
+    const query: any = {};
+    if (technology) query.technology = technology;
+    if (lang) query.lang = lang;
+    if (level) query.level = level;
+  
+    const count = await this.tipModel.countDocuments(query).exec();
+    const effectiveLimit = Math.min(limit, count);
+  
+    const randomIndexes = new Set<number>();
+    while (randomIndexes.size < effectiveLimit) {
+      randomIndexes.add(Math.floor(Math.random() * count));
     }
-    return array;
-  }
-
-  private async generateKey(params: any): Promise<string> {
-    return await JSON.stringify(params);
-  }
-
-  async getRandomTips(
-    technologies?: string[],
-    subtechnologies?: string[],
-    langs?: string[],
-    levels?: string[],
-    limit = 5,
-  ): Promise<Tip[]> {
-    try {
-      const filters: any = {};
-
-      if (technologies?.length) {
-        filters.technology = { $in: technologies };
-      }
-
-      if (subtechnologies?.length) {
-        filters.subtechnology = { $in: subtechnologies };
-      }
-
-      if (langs?.length) {
-        filters.lang = { $in: langs };
-      }
-
-      if (levels?.length) {
-        filters.level = { $in: levels };
-      }
-
-      const tips = await this.tipModel.find(filters).exec();
-      if (tips.length === 0) {
-        throw new Error('No tips found for the provided filters');
-      }
-
-      const key = await this.generateKey(filters);
-      let availableTips = await tips.filter(
-        (tip) => !this.previousTips[key]?.includes(tip._id.toString()),
-      );
-      if (availableTips.length < limit) {
-        availableTips = tips;
-      }
-
-      const shuffledTips = await this.shuffleArray(availableTips);
-      const limitedTips = await shuffledTips.slice(0, limit);
-
-      if (!this.previousTips[key]) {
-        this.previousTips[key] = [];
-      }
-
-      await this.previousTips[key].push(
-        ...limitedTips.map((tip) => tip._id.toString()),
-      );
-      this.previousTips[key] = await this.previousTips[key].slice(-tips.length); // Keep the previous tips within the limit of available tips
-
-      return await limitedTips;
-    } catch (error) {
-      throw new InternalServerErrorException(error.message);
-    }
+  
+    const tips = await Promise.all(
+      Array.from(randomIndexes).map((index) => this.tipModel.findOne(query).skip(index).exec())
+    );
+  
+    return tips;
   }
 }
