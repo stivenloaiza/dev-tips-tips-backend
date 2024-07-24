@@ -25,37 +25,49 @@ import {
   ApiHeader,
 } from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
-import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard'; 
+import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
 import { Tip } from '../entities/tip.entity';
 
 @ApiTags('Tips')
- @ApiHeader({
+@ApiHeader({
   name: 'x-api-key',
   description: 'API key needed to access this endpoint',
-}) 
+})
 @Controller('tips')
 export class TipsController {
   constructor(private readonly tipsService: TipsService) {}
 
-
   @Get('random')
   @ApiOperation({ summary: 'Get random tips based on filters' })
   @ApiResponse({ status: 200, description: 'Random tips based on filters' })
-  @ApiQuery({ name: 'technology', required: false, description: 'Filter by technology' })
-  @ApiQuery({ name: 'lang', required: false, description: 'Filter by language' })
+  @ApiQuery({
+    name: 'technology',
+    required: false,
+    description: 'Filter by technology',
+  })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    description: 'Filter by language',
+  })
   @ApiQuery({ name: 'level', required: false, description: 'Filter by level' })
-  @ApiQuery({ name: 'limit', required: true, description: 'Number of tips to retrieve', example: 4 })
+  @ApiQuery({
+    name: 'limit',
+    required: true,
+    description: 'Number of tips to retrieve',
+    example: 4,
+  })
   async getRandomTips(
     @Query('technology') technology?: string,
     @Query('lang') lang?: string,
     @Query('level') level?: string,
-    @Query('limit') limit = 4
+    @Query('limit') limit = 4,
   ): Promise<Tip[]> {
     const filters = {
       technology,
       lang,
       level,
-      limit: parseInt(limit as any, 10), 
+      limit: parseInt(limit as any, 10),
     };
     return this.tipsService.getRandomTips(filters);
   }
@@ -244,7 +256,7 @@ export class TipsController {
 
   @Post('send')
   @ApiOperation({ summary: 'Send a tip' })
- @UseGuards(TipGuard) 
+  @UseGuards(TipGuard)
   @ApiBody({
     schema: {
       type: 'object',
@@ -265,6 +277,4 @@ export class TipsController {
   async sendTip(@Body('userId') userId: string, @Body('_id') tipId: string) {
     return { message: `${userId} - ${tipId} - Tip sent successfully` };
   }
-
-  
 }

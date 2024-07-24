@@ -23,10 +23,10 @@ import {
 import { Level } from '../entities/level.entity';
 
 @ApiTags('Levels')
-/* @ApiHeader({
+@ApiHeader({
   name: 'x-api-key',
   description: 'API key needed to access this endpoint',
-}) */
+})
 @Controller('levels')
 export class LevelController {
   constructor(private readonly levelService: LevelService) {}

@@ -98,7 +98,7 @@ export class TipsService {
       if (!tip || tip.deletedAt) {
         throw new NotFoundException('Tip not found');
       }
-      return  tip;
+      return tip;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -220,26 +220,33 @@ export class TipsService {
     }
   }
 
-  async getRandomTips(filters: { technology?: string; lang?: string; level?: string; limit: number }): Promise<Tip[]> {
+  async getRandomTips(filters: {
+    technology?: string;
+    lang?: string;
+    level?: string;
+    limit: number;
+  }): Promise<Tip[]> {
     const { technology, lang, level, limit } = filters;
-  
+
     const query: any = {};
     if (technology) query.technology = technology;
     if (lang) query.lang = lang;
     if (level) query.level = level;
-  
+
     const count = await this.tipModel.countDocuments(query).exec();
     const effectiveLimit = Math.min(limit, count);
-  
+
     const randomIndexes = new Set<number>();
     while (randomIndexes.size < effectiveLimit) {
       randomIndexes.add(Math.floor(Math.random() * count));
     }
-  
+
     const tips = await Promise.all(
-      Array.from(randomIndexes).map((index) => this.tipModel.findOne(query).skip(index).exec())
+      Array.from(randomIndexes).map((index) =>
+        this.tipModel.findOne(query).skip(index).exec(),
+      ),
     );
-  
+
     return tips;
   }
 }

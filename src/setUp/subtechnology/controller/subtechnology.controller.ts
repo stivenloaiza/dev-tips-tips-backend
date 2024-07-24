@@ -23,10 +23,10 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Sub-Technology')
-/* @ApiHeader({
+@ApiHeader({
   name: 'x-api-key',
   description: 'API key needed to access this endpoint',
-}) */
+})
 @Controller('subtechnology')
 export class SubtechnologyController {
   constructor(private readonly subtechnologyService: SubtechnologyService) {}

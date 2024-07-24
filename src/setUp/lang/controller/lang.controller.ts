@@ -22,10 +22,10 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Langs')
-/* @ApiHeader({
+@ApiHeader({
   name: 'x-api-key',
   description: 'API key needed to access this endpoint',
-}) */
+})
 @Controller('lang')
 export class LangController {
   constructor(private readonly langService: LangService) {}
