@@ -49,46 +49,42 @@ export class CreateTipDto {
   })
   @IsBoolean()
   @IsOptional()
-  available: boolean;
+  available?: boolean;
 
   @ApiProperty({
-    description: 'Array of IDs of levels associated with the tip',
-    example: 'junior',
+    description: 'ID of the level associated with the tip',
+    example: '60d9b45d8e3c8b001a3c3d6a',
     type: String,
   })
   @IsNotEmpty()
   @IsMongoId()
-  @IsString({ each: true })
   level: string;
 
   @ApiProperty({
-    description: 'Array of IDs of technologies associated with the tip',
-    example: 'java',
+    description: 'ID of the technology associated with the tip',
+    example: '60d9b45d8e3c8b001a3c3d6b',
     type: String,
   })
   @IsNotEmpty()
   @IsMongoId()
-  @IsString({ each: true })
   technology: string;
 
   @ApiProperty({
-    description: 'Array of IDs of subtechnologies associated with the tip',
-    example: 'sprint boot',
+    description: 'ID of the subtechnology associated with the tip',
+    example: '60d9b45d8e3c8b001a3c3d6c',
     type: String,
   })
   @IsOptional()
   @IsMongoId()
-  @IsString({ each: true })
-  subtechnology: string;
+  subtechnology?: string;
 
   @ApiProperty({
-    description: 'Array of IDs of languages associated with the tip',
-    example: 'spanish',
+    description: 'ID of the language associated with the tip',
+    example: '60d9b45d8e3c8b001a3c3d6d',
     type: String,
   })
   @IsNotEmpty()
   @IsMongoId()
-  @IsString()
   lang: string;
 
   @ApiProperty({

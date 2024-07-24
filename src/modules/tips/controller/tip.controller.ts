@@ -25,14 +25,14 @@ import {
   ApiHeader,
 } from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
-import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
+/* import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard'; */
 import { Tip } from '../entities/tip.entity';
 
 @ApiTags('Tips')
-@ApiHeader({
+/* @ApiHeader({
   name: 'x-api-key',
   description: 'API key needed to access this endpoint',
-})
+}) */
 @Controller('tips')
 export class TipsController {
   constructor(private readonly tipsService: TipsService) {}
@@ -222,7 +222,7 @@ export class TipsController {
 
   @Post('send')
   @ApiOperation({ summary: 'Send a tip' })
-  @UseGuards(TipGuard)
+  /* @UseGuards(TipGuard) */
   @ApiBody({
     schema: {
       type: 'object',

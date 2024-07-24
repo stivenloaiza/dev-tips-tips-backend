@@ -10,7 +10,7 @@ export class ApiKeyMiddleware implements NestMiddleware {
     if (!apiKey) {
       return res
         .status(HttpStatus.FORBIDDEN)
-        .json({ message: 'API Key is missing' });
+        .json({ message: 'API Key is missing here' });
     }
 
     try {

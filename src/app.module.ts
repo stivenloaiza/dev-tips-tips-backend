@@ -28,6 +28,6 @@ import { ApiKeyMiddleware } from './libs/guards/auth.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApiKeyMiddleware).forRoutes('*');
+    consumer.apply(ApiKeyMiddleware).forRoutes('/news'); /* volver a poner '*' */
   }
 }

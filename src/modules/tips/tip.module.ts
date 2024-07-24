@@ -15,7 +15,7 @@ import { TipsController } from './controller/tip.controller';
 import { TipsService } from './service/tips.service';
 import { UserSchema } from 'src/libs/guards/ForwardingTips/schema/user.schema';
 import { UserTipSchema } from 'src/libs/guards/ForwardingTips/schema/user-tip.schema';
-import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
+/* import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard'; */
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
     ]),
   ],
   controllers: [TipsController],
-  providers: [TipsService, TipGuard],
+  providers: [TipsService, /* TipGuard */],
   exports: [TipsService],
 })
 export class TipsModule {}
