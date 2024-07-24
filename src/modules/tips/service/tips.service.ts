@@ -98,7 +98,7 @@ export class TipsService {
       if (!tip || tip.deletedAt) {
         throw new NotFoundException('Tip not found');
       }
-      return await tip;
+      return  tip;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
