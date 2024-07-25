@@ -25,7 +25,7 @@ import {
   ApiHeader,
 } from '@nestjs/swagger';
 import { TipsService } from '../service/tips.service';
-import { TipGuard } from 'src/libs/guards/ForwardingTips/tip.guard';
+import { TipGuard } from '../../../libs/guards/ForwardingTips/tip.guard';
 import { Tip } from '../entities/tip.entity';
 
 @ApiTags('Tips')

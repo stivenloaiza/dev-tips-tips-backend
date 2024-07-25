@@ -9,13 +9,13 @@ import { Tip, TipDocument } from '../entities/tip.entity';
 import {
   Technology,
   TechnologyDocument,
-} from 'src/setUp/technology/entities/technology.entity';
+} from '../../../setUp/technology/entities/technology.entity';
 import {
   Subtechnology,
   SubtechnologyDocument,
-} from 'src/setUp/subtechnology/entities/subtechnology.entity';
-import { Level, LevelDocument } from 'src/setUp/level/entities/level.entity';
-import { Lang, LangDocument } from 'src/setUp/lang/entities/lang.entity';
+} from '../../../setUp/subtechnology/entities/subtechnology.entity';
+import { Level, LevelDocument } from '../../../setUp/level/entities/level.entity';
+import { Lang, LangDocument } from '../../../setUp/lang/entities/lang.entity';
 import { CreateTipDto } from '../dto/create-tip.dto';
 import { UpdateTipDto } from '../dto/update-tip.dto';
 
