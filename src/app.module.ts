@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-import { PersistenceModule } from './libs/persistence/persistence.module';
-import { ConfigModule } from '@nestjs/config';
-import dbConfig from './libs/persistence/dbConfig';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TipsModule } from './modules/tips/tip.module';
 import { LevelModule } from './setUp/level/level.module';
 import { LangModule } from './setUp/lang/lang.module';
 import { TechnologyModule } from './setUp/technology/technology.module';
 import { SubtechnologyModule } from './setUp/subtechnology/subTechnology.module';
+import { ConfigModule } from '@nestjs/config';
+import dbConfig from './libs/persistence/dbConfig';
+import { PersistenceModule } from './libs/persistence/persistence.module';
+import { ApiKeyMiddleware } from './libs/guards/auth.middleware';
 
 @Module({
   imports: [
@@ -15,14 +16,18 @@ import { SubtechnologyModule } from './setUp/subtechnology/subTechnology.module'
       load: [dbConfig],
       isGlobal: true,
     }),
-    PersistenceModule,
     TipsModule,
     LevelModule,
     LangModule,
     TechnologyModule,
     SubtechnologyModule,
+    PersistenceModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ApiKeyMiddleware).forRoutes('*'); /* volver a poner '*' */
+  }
+}

@@ -12,7 +12,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Microsevices Tips')
-    .setDescription('Microsevices Tips')
+    .setDescription(
+      'This API provides a complete set of functionalities for creating, reading, updating, and deleting technological tips. Tips are organized by experience level, technology, and subtechnology, allowing for better categorization and search',
+    )
     .setVersion('1.0')
     .addTag('')
     .addBearerAuth()
