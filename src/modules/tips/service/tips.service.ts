@@ -14,7 +14,10 @@ import {
   Subtechnology,
   SubtechnologyDocument,
 } from '../../../setUp/subtechnology/entities/subtechnology.entity';
-import { Level, LevelDocument } from '../../../setUp/level/entities/level.entity';
+import {
+  Level,
+  LevelDocument,
+} from '../../../setUp/level/entities/level.entity';
 import { Lang, LangDocument } from '../../../setUp/lang/entities/lang.entity';
 import { CreateTipDto } from '../dto/create-tip.dto';
 import { UpdateTipDto } from '../dto/update-tip.dto';

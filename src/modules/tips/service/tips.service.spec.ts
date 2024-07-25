@@ -1,18 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { TipsService } from './tips.service';
-import { Model } from 'mongoose';
-import { Tip } from '../entities/tip.entity';
 import { CreateTipDto } from '../dto/create-tip.dto';
 
 describe('TipsService', () => {
   let service: TipsService;
-  let levelModel: Model<any>;
-  let technologyModel: Model<any>;
-  let subtechnologyModel: Model<any>;
-  let langModel: Model<any>;
-  let tipModel: Model<Tip>;
 
   const mockLevelModel = {
     findById: jest.fn(),
@@ -46,18 +42,16 @@ describe('TipsService', () => {
         TipsService,
         { provide: getModelToken('Level'), useValue: mockLevelModel },
         { provide: getModelToken('Technology'), useValue: mockTechnologyModel },
-        { provide: getModelToken('Subtechnology'), useValue: mockSubtechnologyModel },
+        {
+          provide: getModelToken('Subtechnology'),
+          useValue: mockSubtechnologyModel,
+        },
         { provide: getModelToken('Lang'), useValue: mockLangModel },
         { provide: getModelToken('Tip'), useValue: mockTipModel },
       ],
     }).compile();
 
     service = module.get<TipsService>(TipsService);
-    levelModel = module.get<Model<any>>(getModelToken('Level'));
-    technologyModel = module.get<Model<any>>(getModelToken('Technology'));
-    subtechnologyModel = module.get<Model<any>>(getModelToken('Subtechnology'));
-    langModel = module.get<Model<any>>(getModelToken('Lang'));
-    tipModel = module.get<Model<Tip>>(getModelToken('Tip'));
   });
 
   it('should be defined', () => {
@@ -84,41 +78,53 @@ describe('TipsService', () => {
 
     it('should create a tip successfully', async () => {
       mockLevelModel.findById.mockResolvedValue({ name: 'Level Name' });
-      mockTechnologyModel.findById.mockResolvedValue({ name: 'Technology Name' });
-      mockSubtechnologyModel.findById.mockResolvedValue({ name: 'Subtechnology Name' });
+      mockTechnologyModel.findById.mockResolvedValue({
+        name: 'Technology Name',
+      });
+      mockSubtechnologyModel.findById.mockResolvedValue({
+        name: 'Subtechnology Name',
+      });
       mockLangModel.findById.mockResolvedValue({ name: 'Lang Name' });
-      mockTipModel.create.mockResolvedValue({ save: jest.fn().mockResolvedValue('createdTip') });
+      mockTipModel.create.mockResolvedValue({
+        save: jest.fn().mockResolvedValue('createdTip'),
+      });
 
       const result = await service.create(createTipDto);
 
       expect(result).toBe('createdTip');
       expect(mockLevelModel.findById).toHaveBeenCalledWith('levelId');
       expect(mockTechnologyModel.findById).toHaveBeenCalledWith('technologyId');
-      expect(mockSubtechnologyModel.findById).toHaveBeenCalledWith('subtechnologyId');
+      expect(mockSubtechnologyModel.findById).toHaveBeenCalledWith(
+        'subtechnologyId',
+      );
       expect(mockLangModel.findById).toHaveBeenCalledWith('langId');
-      expect(mockTipModel.create).toHaveBeenCalledWith(expect.objectContaining({
-        multimedia_url: createTipDto.multimedia_url,
-        title: createTipDto.title,
-        body: createTipDto.body,
-        link: createTipDto.link,
-        available: true,
-        level: 'Level Name',
-        technology: 'Technology Name',
-        subtechnology: 'Subtechnology Name',
-        lang: 'Lang Name',
-        createdAt: createTipDto.createdAt,
-        createBy: createTipDto.createBy,
-        updatedAt: createTipDto.updatedAt,
-        updateBy: createTipDto.updateBy,
-        deletedAt: createTipDto.deletedAt,
-        deleteBy: createTipDto.deleteBy,
-      }));
+      expect(mockTipModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          multimedia_url: createTipDto.multimedia_url,
+          title: createTipDto.title,
+          body: createTipDto.body,
+          link: createTipDto.link,
+          available: true,
+          level: 'Level Name',
+          technology: 'Technology Name',
+          subtechnology: 'Subtechnology Name',
+          lang: 'Lang Name',
+          createdAt: createTipDto.createdAt,
+          createBy: createTipDto.createBy,
+          updatedAt: createTipDto.updatedAt,
+          updateBy: createTipDto.updateBy,
+          deletedAt: createTipDto.deletedAt,
+          deleteBy: createTipDto.deleteBy,
+        }),
+      );
     });
 
     it('should throw NotFoundException if level is not found', async () => {
       mockLevelModel.findById.mockResolvedValue(null);
 
-      await expect(service.create(createTipDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createTipDto)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockLevelModel.findById).toHaveBeenCalledWith('levelId');
     });
 
@@ -126,26 +132,40 @@ describe('TipsService', () => {
       mockLevelModel.findById.mockResolvedValue({ name: 'Level Name' });
       mockTechnologyModel.findById.mockResolvedValue(null);
 
-      await expect(service.create(createTipDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createTipDto)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockTechnologyModel.findById).toHaveBeenCalledWith('technologyId');
     });
 
     it('should throw NotFoundException if subtechnology is not found', async () => {
       mockLevelModel.findById.mockResolvedValue({ name: 'Level Name' });
-      mockTechnologyModel.findById.mockResolvedValue({ name: 'Technology Name' });
+      mockTechnologyModel.findById.mockResolvedValue({
+        name: 'Technology Name',
+      });
       mockSubtechnologyModel.findById.mockResolvedValue(null);
 
-      await expect(service.create(createTipDto)).rejects.toThrow(NotFoundException);
-      expect(mockSubtechnologyModel.findById).toHaveBeenCalledWith('subtechnologyId');
+      await expect(service.create(createTipDto)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockSubtechnologyModel.findById).toHaveBeenCalledWith(
+        'subtechnologyId',
+      );
     });
 
     it('should throw NotFoundException if lang is not found', async () => {
       mockLevelModel.findById.mockResolvedValue({ name: 'Level Name' });
-      mockTechnologyModel.findById.mockResolvedValue({ name: 'Technology Name' });
-      mockSubtechnologyModel.findById.mockResolvedValue({ name: 'Subtechnology Name' });
+      mockTechnologyModel.findById.mockResolvedValue({
+        name: 'Technology Name',
+      });
+      mockSubtechnologyModel.findById.mockResolvedValue({
+        name: 'Subtechnology Name',
+      });
       mockLangModel.findById.mockResolvedValue(null);
 
-      await expect(service.create(createTipDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createTipDto)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockLangModel.findById).toHaveBeenCalledWith('langId');
     });
   });
@@ -161,10 +181,7 @@ describe('TipsService', () => {
         page: '2',
       };
 
-      const tips = [
-        { title: 'Tip 1' },
-        { title: 'Tip 2' },
-      ];
+      const tips = [{ title: 'Tip 1' }, { title: 'Tip 2' }];
 
       mockTipModel.exec.mockResolvedValue(tips);
 
@@ -184,10 +201,7 @@ describe('TipsService', () => {
 
     it('should return an array of tips with default pagination if filters are not provided', async () => {
       const filters = {};
-      const tips = [
-        { title: 'Tip 1' },
-        { title: 'Tip 2' },
-      ];
+      const tips = [{ title: 'Tip 1' }, { title: 'Tip 2' }];
 
       mockTipModel.exec.mockResolvedValue(tips);
 
@@ -205,10 +219,7 @@ describe('TipsService', () => {
         limit: 'invalid',
         page: 'invalid',
       };
-      const tips = [
-        { title: 'Tip 1' },
-        { title: 'Tip 2' },
-      ];
+      const tips = [{ title: 'Tip 1' }, { title: 'Tip 2' }];
 
       mockTipModel.exec.mockResolvedValue(tips);
 
@@ -240,7 +251,9 @@ describe('TipsService', () => {
         exec: jest.fn().mockRejectedValue(new Error('Database error')),
       });
 
-      await expect(service.findOne('errorId')).rejects.toThrow(InternalServerErrorException);
+      await expect(service.findOne('errorId')).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(mockTipModel.findById).toHaveBeenCalledWith('errorId');
     });
   });
@@ -264,9 +277,10 @@ describe('TipsService', () => {
         exec: jest.fn().mockRejectedValue(new Error('Database error')),
       });
 
-      await expect(service.delete('errorId')).rejects.toThrow(InternalServerErrorException);
+      await expect(service.delete('errorId')).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(mockTipModel.findById).toHaveBeenCalledWith('errorId');
     });
   });
-  
 });

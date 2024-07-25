@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose'; // Importar getModelToken para trabajar con modelos en pruebas
-import { Model } from 'mongoose';
 import { TipsController } from './tip.controller';
 import { TipsService } from '../service/tips.service';
 import { CreateTipDto } from '../dto/create-tip.dto';
@@ -21,18 +20,20 @@ const mockTipModel = {
   findById: jest.fn().mockResolvedValue({}),
 };
 
-
-
 describe('TipsController', () => {
   let controller: TipsController;
   let service: TipsService;
 
   const mockTipsService = {
     create: jest.fn((dto: CreateTipDto) => Promise.resolve(dto)),
-    findAll: jest.fn((filters: any) => Promise.resolve([])),
-  findOne: jest.fn((id: string) => Promise.resolve({ id })),
-  update: jest.fn((id: string, dto: UpdateTipDto) => Promise.resolve({ id, ...dto })),
-  delete: jest.fn((id: string) => Promise.resolve({ message: 'Tip deleted successfully' })),
+    findAll: jest.fn(() => Promise.resolve([])),
+    findOne: jest.fn((id: string) => Promise.resolve({ id })),
+    update: jest.fn((id: string, dto: UpdateTipDto) =>
+      Promise.resolve({ id, ...dto }),
+    ),
+    delete: jest.fn(() =>
+      Promise.resolve({ message: 'Tip deleted successfully' }),
+    ),
   };
 
   const mockTipGuard = {
@@ -86,41 +87,49 @@ describe('TipsController', () => {
       expect(service.create).toHaveBeenCalledWith(createTipDto);
     });
 
-      describe('findAll', () => {
-    it('should retrieve all tips with filters and pagination', async () => {
-      const filters = { page: 1, limit: 10, title: 'Tips TypeScript' };
-      const result = await controller.findAll(filters.page, filters.limit, filters.title, undefined, undefined, undefined, undefined);
-      expect(result).toEqual([]);
-      expect(mockTipsService.findAll).toHaveBeenCalledWith(filters);
+    describe('findAll', () => {
+      it('should retrieve all tips with filters and pagination', async () => {
+        const filters = { page: 1, limit: 10, title: 'Tips TypeScript' };
+        const result = await controller.findAll(
+          filters.page,
+          filters.limit,
+          filters.title,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+        );
+        expect(result).toEqual([]);
+        expect(mockTipsService.findAll).toHaveBeenCalledWith(filters);
+      });
     });
-  });
 
-  describe('findOne', () => {
-    it('should retrieve a single tip by id', async () => {
-      const id = '609c6c5b0e468c3c24cfe8a5';
-      const result = await controller.findOne(id);
-      expect(result).toEqual({ id });
-      expect(mockTipsService.findOne).toHaveBeenCalledWith(id);
+    describe('findOne', () => {
+      it('should retrieve a single tip by id', async () => {
+        const id = '609c6c5b0e468c3c24cfe8a5';
+        const result = await controller.findOne(id);
+        expect(result).toEqual({ id });
+        expect(mockTipsService.findOne).toHaveBeenCalledWith(id);
+      });
     });
-  });
 
-  describe('update', () => {
-    it('should update a tip by id', async () => {
-      const id = '609c6c5b0e468c3c24cfe8a5';
-      const updateTipDto: UpdateTipDto = { title: 'Updated Title' };
-      const result = await controller.update(id, updateTipDto);
-      expect(result).toEqual({ id, ...updateTipDto });
-      expect(mockTipsService.update).toHaveBeenCalledWith(id, updateTipDto);
+    describe('update', () => {
+      it('should update a tip by id', async () => {
+        const id = '609c6c5b0e468c3c24cfe8a5';
+        const updateTipDto: UpdateTipDto = { title: 'Updated Title' };
+        const result = await controller.update(id, updateTipDto);
+        expect(result).toEqual({ id, ...updateTipDto });
+        expect(mockTipsService.update).toHaveBeenCalledWith(id, updateTipDto);
+      });
     });
-  });
 
-  describe('remove', () => {
-    it('should delete a tip by id', async () => {
-      const id = '609c6c5b0e468c3c24cfe8a5';
-      const result = await controller.remove(id);
-      expect(result).toEqual({ message: 'Tip deleted successfully' });
-      expect(mockTipsService.delete).toHaveBeenCalledWith(id);
+    describe('remove', () => {
+      it('should delete a tip by id', async () => {
+        const id = '609c6c5b0e468c3c24cfe8a5';
+        const result = await controller.remove(id);
+        expect(result).toEqual({ message: 'Tip deleted successfully' });
+        expect(mockTipsService.delete).toHaveBeenCalledWith(id);
+      });
     });
   });
-});
 });
