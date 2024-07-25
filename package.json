@@ -60,6 +60,28 @@
     "typescript": "^5.1.3"
   },
   "jest": {
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "functions": 30,
+        "lines": 30
+      }
+    },
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/",
+      "/build/",
+      "/src/libs/guards",
+      "/src/libs/persistence",
+      "/src/modules/tips/dto",
+      "/src/modules/tips/entities",
+      "/src/modules/tips/tip.module.ts",
+      "/src/setUp",
+      "/src/app.module.ts",
+      "/src/main.ts",
+      ".eslintrc.js",
+      ".prettierrc"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",

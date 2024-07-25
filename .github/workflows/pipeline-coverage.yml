@@ -1,0 +1,43 @@
+name: Pipeline Coverage
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+     
+  pull_request:
+    branches:
+      - main
+      - dev
+     
+
+jobs:
+  coverage:
+    name: Coverage analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.10.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Read skip-tests configuration
+        id: read_config
+        run: |
+          skip_tests=$(jq '.skipTests' skip-test.config.json)
+          echo "RUN_TESTS=${skip_tests}" >> $GITHUB_ENV
+
+      - name: Debug RUN_TESTS
+        run: echo "RUN_TESTS is set to $RUN_TESTS"
+
+      - name: Run tests with coverage
+        if: env.RUN_TESTS == 'true'
+        run: npm run test:cov
